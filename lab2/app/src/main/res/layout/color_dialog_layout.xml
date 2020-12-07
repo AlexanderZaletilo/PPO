@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="?attr/colorSecond">
+    <TableRow style="@style/tableRow">
+        <ImageButton style="@style/colorPickerItem" />
+        <ImageButton style="@style/colorPickerItem" />
+        <ImageButton style="@style/colorPickerItem" />
+    </TableRow>
+    <TableRow style="@style/tableRow">
+        <ImageButton style="@style/colorPickerItem" />
+        <ImageButton style="@style/colorPickerItem" />
+        <ImageButton style="@style/colorPickerItem" />
+    </TableRow>
+    <TableRow style="@style/tableRow">
+        <ImageButton style="@style/colorPickerItem" />
+        <ImageButton style="@style/colorPickerItem" />
+        <ImageButton style="@style/colorPickerItem" />
+    </TableRow>
+</TableLayout>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    tools:context=".LaunchActivity"
+    android:id="@+id/launch_layout"
+    android:background="?attr/colorSecond">
+
+    <ImageButton
+        android:id="@+id/launch_button_play_pause"
+        app:layout_constraintBottom_toBottomOf="@+id/launch_textview_phase_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/launch_textview_phase_type"
+        app:layout_constraintTop_toTopOf="@+id/launch_textview_phase_type"
+        app:srcCompat="@drawable/play_pause_selector"
+        style="@style/ImageButtonsBase"/>
+
+    <ImageButton
+        android:id="@+id/launch_button_skip_next"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        app:srcCompat="@drawable/ic_baseline_skip_next_24"
+        style="@style/ImageButtonsBase"/>
+
+    <ImageButton
+        android:id="@+id/launch_button_skip_prev"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        app:srcCompat="@drawable/ic_baseline_skip_previous_24"
+        style="@style/ImageButtonsBase"/>
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/launch_textView_phase_count"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/launch_textview_phase_remaining">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_phases"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/launch_textview_phase_type"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textSize="?attr/font_large"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/launch_textview_phase_time"
+        app:layout_constraintEnd_toStartOf="@+id/launch_button_play_pause"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/launch_textview_phase_time"
+        app:layout_constraintTop_toTopOf="@+id/launch_textview_phase_time" />
+
+    <TextView
+        android:id="@+id/launch_textView_phase_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="?attr/font_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/launch_button_skip_next"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintHorizontal_bias="0.525"
+        app:layout_constraintStart_toEndOf="@+id/launch_button_skip_prev" />
+
+    <TextView
+        android:id="@+id/launch_textview_phase_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="?attr/font_medium"
+        app:layout_constraintEnd_toStartOf="@+id/launch_textview_phase_type"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/launch_textview_phase_remaining"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="?attr/font_xlarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/launch_textview_phase_type" />
+</androidx.constraintlayout.widget.ConstraintLayout>

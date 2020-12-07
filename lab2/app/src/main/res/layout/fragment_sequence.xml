@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?attr/colorSecond"
+    android:layout_width="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:background="?attr/colorSecond"
+    tools:context=".SequenceFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sequence_intervals_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sequence_editReps" />
+    <EditText
+        android:id="@+id/sequence_editTitle"
+        android:inputType="text"
+        android:maxLength="15"
+        style="@style/editSequenceEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="?attr/font_medium"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sequence_textview_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <TextView
+        android:id="@+id/sequence_textview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/titleLabel"
+        android:textColor="?attr/colorFirst"
+        android:textSize="?attr/font_large"
+        app:layout_constraintEnd_toStartOf="@+id/sequence_editTitle"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sequence_editTitle" />
+
+    <TextView
+        android:id="@+id/sequence_textview_reps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="?attr/font_large"
+        android:textColor="?attr/colorFirst"
+        android:text="@string/repetitionsLabel"
+        app:layout_constraintEnd_toStartOf="@+id/sequence_editReps"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sequence_editReps" />
+
+    <EditText
+        android:id="@+id/sequence_editReps"
+        style="@style/editSequenceEditText"
+        android:inputType="number"
+        android:maxLength="2"
+        android:textSize="?attr/font_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sequence_textview_reps"
+        app:layout_constraintTop_toBottomOf="@+id/sequence_editTitle" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

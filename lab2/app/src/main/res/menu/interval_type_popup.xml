@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_interval_prepare"
+        android:title="@string/prepare"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_interval_work"
+        android:title="@string/work"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_interval_rest"
+        android:title="@string/rest"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_interval_cooldown"
+        android:title="@string/cool_down"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_interval_repeat"
+        android:title="@string/repeat"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_interval_delete"
+        android:title="@string/action_delete"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_interval_add_above"
+        android:title="@string/add_above"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_interval_add_below"
+        android:title="@string/add_below"
+        app:showAsAction="never"/>
+</menu>
