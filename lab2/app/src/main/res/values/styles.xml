@@ -1,0 +1,104 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorSecond">#FFFFFF</item>
+        <item name="colorFirst">#000000</item>
+        <item name="colorAccent">#1919FF</item>
+    </style>
+    <style name="SettingsLightStyle">
+        <item name="android:textColorSecondary">#444444</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:background">#FFFFFF</item>
+    </style>
+    <style name="SettingsNightStyle">
+        <item name="android:textColorSecondary">#FFFFFF</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#222222</item>
+    </style>
+    <style name="DarkTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorSecond">#222222</item>
+        <item name="colorFirst">#FFFFFF</item>
+        <item name="colorAccent">#4949FF</item>
+    </style>
+    <style name="MyPopup" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">?attr/colorFirst</item>
+        <item name="android:itemBackground">?attr/colorSecond</item>
+    </style>
+
+    <style name="DarkTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="colorPickerItem">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:foreground">@drawable/color_selector</item>
+        <item name="android:background">@drawable/ic_circle_background</item>
+    </style>
+    <style name="Widget.Support.CoordinatorLayout" parent="android:Widget">
+        @null
+    </style>
+    <style name="tableRow">
+        <item name="android:background">?attr/colorSecond</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:padding">5dp</item>
+    </style>
+    <style name="editSequenceColors">
+        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="android:textColorHighlight">#8989FF</item>
+        <item name="android:textColorLink">#8989FF</item>
+        <item name="android:textCursorDrawable">@null</item>
+    </style>
+    <style name="editSequenceEditText" parent="@style/editSequenceColors">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="ImageButtonsBase">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+    <style name="showSequenceTextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="FontStyle">
+        <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge</item>
+    </style>
+    <style name="myPopupMenuTextAppearanceSmall" parent="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu.Small">
+        <item name="android:textSize">?attr/font_medium</item>
+    </style>
+    <style name="myPopupMenuTextAppearanceLarge" parent="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu.Large">
+        <item name="android:textSize">?attr/font_large</item>
+    </style>
+
+    <style name="FontStyle.Small">
+        <item name="font_small">14sp</item>
+        <item name="font_medium">16sp</item>
+        <item name="font_large">18sp</item>
+        <item name="font_xlarge">60sp</item>
+    </style>
+    <style name="FontStyle.Medium">
+        <item name="font_small">18sp</item>
+        <item name="font_medium">20sp</item>
+        <item name="font_large">22sp</item>
+        <item name="font_xlarge">80sp</item>
+    </style>
+    <style name="FontStyle.Large">
+        <item name="font_small">26sp</item>
+        <item name="font_medium">28sp</item>
+        <item name="font_large">30sp</item>
+        <item name="font_xlarge">120sp</item>
+    </style>
+</resources>

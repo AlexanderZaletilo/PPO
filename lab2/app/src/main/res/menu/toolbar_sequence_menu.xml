@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_interval_add"
+        android:icon="@drawable/ic_baseline_add_white_36"
+        android:title="@string/add"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_seq_edit_palette"
+        android:icon="@drawable/ic_baseline_color_lens_white_36"
+        android:title="@string/color"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_seq_edit_done"
+        android:icon="@drawable/ic_baseline_done_white_36"
+        android:title="@string/save"
+        app:showAsAction="ifRoom"/>
+</menu>

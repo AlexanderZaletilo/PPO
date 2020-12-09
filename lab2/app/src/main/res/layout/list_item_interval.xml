@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/seq_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <ImageButton
+        android:id="@+id/interval_button_isseconds"
+        style="@style/ImageButtonsBase"
+        app:layout_constraintBottom_toBottomOf="@+id/interval_button_minus"
+        app:layout_constraintStart_toEndOf="@+id/interval_textview_pos"
+        app:layout_constraintTop_toTopOf="@+id/interval_button_minus"
+        app:srcCompat="@drawable/timer_selector" />
+
+    <TextView
+        android:id="@+id/interval_textview_pos"
+        style="@style/editSequenceColors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/interval_button_isseconds"
+        app:layout_constraintEnd_toStartOf="@+id/interval_button_isseconds"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/interval_button_isseconds" />
+
+    <TextView
+        android:id="@+id/interval_textview_type"
+        style="@style/editSequenceColors"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textAlignment="center"
+        android:textSize="?attr/font_small"
+        app:layout_constraintEnd_toStartOf="@+id/interval_buton_plus"
+        app:layout_constraintStart_toEndOf="@+id/interval_button_minus"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/interval_buton_plus"
+        style="@style/ImageButtonsBase"
+        app:layout_constraintBottom_toBottomOf="@+id/interval_edittext_reps"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/interval_edittext_reps"
+        app:layout_constraintTop_toTopOf="@+id/interval_edittext_reps"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
+
+    <ImageButton
+        android:id="@+id/interval_button_minus"
+        style="@style/ImageButtonsBase"
+        app:layout_constraintBottom_toBottomOf="@+id/interval_edittext_reps"
+        app:layout_constraintEnd_toStartOf="@+id/interval_edittext_reps"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/interval_button_isseconds"
+        app:layout_constraintTop_toBottomOf="@+id/interval_textview_type"
+        app:srcCompat="@drawable/ic_baseline_remove_24" />
+
+    <ImageButton
+        android:id="@+id/interval_imbutton_menu"
+        style="@style/ImageButtonsBase"
+        app:layout_constraintStart_toStartOf="@+id/interval_button_isseconds"
+        app:layout_constraintTop_toTopOf="@+id/interval_textview_type"
+        app:srcCompat="@drawable/ic_baseline_more_vert_blue_24" />
+
+    <EditText
+        android:id="@+id/interval_edittext_reps"
+        style="@style/editSequenceEditText"
+        android:ems="10"
+        android:inputType="number"
+        android:maxLength="4"
+        android:textAlignment="center"
+        android:textSize="?attr/font_medium"
+        app:layout_constraintEnd_toStartOf="@+id/interval_buton_plus"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/interval_button_minus"
+        app:layout_constraintTop_toBottomOf="@+id/interval_textview_type" />
+</androidx.constraintlayout.widget.ConstraintLayout>

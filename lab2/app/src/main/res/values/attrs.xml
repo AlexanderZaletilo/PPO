@@ -1,0 +1,10 @@
+<resources>
+    <declare-styleable name="FontStyle">
+        <attr name="font_small" format="dimension" />
+        <attr name="font_medium" format="dimension" />
+        <attr name="font_large" format="dimension" />
+        <attr name="font_xlarge" format="dimension" />
+    </declare-styleable>
+    <attr name="colorFirst" format="color"/>
+    <attr name="colorSecond" format="color"/>
+</resources>

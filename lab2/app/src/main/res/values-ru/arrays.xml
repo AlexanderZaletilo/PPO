@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="color_palette_arr">
+        <item>@color/red</item>
+        <item>@color/orange_red</item>
+        <item>@color/dark_orange</item>
+        <item>@color/dark_green</item>
+        <item>@color/purple</item>
+        <item>@color/blue</item>
+        <item>@color/dodger_blue</item>
+        <item>@color/indigo</item>
+        <item>@color/green</item>
+    </array>
+    <array name="interval_types">
+        <item>@string/prepare</item>
+        <item>@string/work</item>
+        <item>@string/rest</item>
+        <item>@string/cool_down</item>
+        <item>@string/repeat</item>
+    </array>
+    <array name="langs_display">
+        <item>@string/eng</item>
+        <item>@string/rus</item>
+    </array>
+    <array name="langs_internal">
+        <item>en</item>
+        <item>ru</item>
+    </array>
+    <array name="fonts_display">
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </array>
+    <array name="fonts_internal">
+        <item>small</item>
+        <item>medium</item>
+        <item>large</item>
+    </array>
+</resources>

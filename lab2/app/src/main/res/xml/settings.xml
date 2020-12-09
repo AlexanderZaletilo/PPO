@@ -1,0 +1,24 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreferenceCompat
+        android:key="isNight"
+        android:title="@string/nightTheme"
+        app:allowDividerBelow="true"
+        android:defaultValue="false"/>
+    <DropDownPreference
+        app:allowDividerBelow="true"
+        app:allowDividerAbove="true"
+        android:key="lang"
+        android:title="@string/lang"
+        android:entries="@array/langs_display"
+        app:useSimpleSummaryProvider="true"
+        android:entryValues="@array/langs_internal"/>
+    <DropDownPreference
+        app:allowDividerBelow="true"
+        app:allowDividerAbove="true"
+        android:key="font"
+        android:title="@string/fontsize"
+        android:entries="@array/fonts_display"
+        app:useSimpleSummaryProvider="true"
+        android:entryValues="@array/fonts_internal"/>
+</androidx.preference.PreferenceScreen>
