@@ -3,31 +3,46 @@ package com.example.lab3
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-import android.content.Intent
-import android.text.TextUtils
-import android.util.Log
 import android.view.View
-import android.widget.Toast
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity() {
 
     // [START declare_auth]
     private lateinit var auth: FirebaseAuth
     // [END declare_auth]
+    private var isAuth = true
+
+    private var register_title_string: String? = null
+    private var auth_title_string: String? = null
+    private var register_button_string: String? = null
+    private var login_string: String? = null
+
+    private lateinit var switchButton: Button
+    private lateinit var repeatTextView: TextView
+    private lateinit var repeatEditText: EditText
+    private lateinit var titleTextView: TextView
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-       /// setProgressBar(binding.progressBar)
+        register_title_string = resources.getString(R.string.registration)
+        auth_title_string = resources.getString(R.string.authentication)
+        login_string = resources.getString(R.string.auth)
+        register_button_string = resources.getString(R.string.register)
 
-        // [START initialize_auth]
-        // Initialize Firebase Auth
+        switchButton = findViewById(R.id.auth_button_switch)
+        repeatTextView = findViewById(R.id.auth_textview_repeat_pass)
+        repeatEditText = findViewById(R.id.auth_edittext_repeat_pass)
+        titleTextView = findViewById(R.id.auth_title)
+        // setProgressBar(binding.progressBar)
+        switchButton.setOnClickListener { onSwitchClicked() }
         auth = Firebase.auth
-        // [END initialize_auth]
     }
 
     // [START on_start_check_user]
@@ -38,8 +53,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         //updateUI(currentUser)
     }
 
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
+    private fun onSwitchClicked()
+    {
+        if(isAuth)
+        {
+            titleTextView.text = register_title_string
+            repeatEditText.visibility = EditText.VISIBLE
+            repeatTextView.visibility = TextView.VISIBLE
+            switchButton.text = login_string
+        }
+        else
+        {
+            titleTextView.text = auth_title_string
+            repeatTextView.visibility = TextView.GONE
+            repeatEditText.visibility = EditText.GONE
+            switchButton.text = register_button_string
+        }
+        isAuth = !isAuth
     }
     // [END on_start_check_user]
 
@@ -219,18 +249,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             intent.putExtra("EXTRA_MFA_RESOLVER", resolver)
             setResult(MultiFactorActivity.RESULT_NEEDS_MFA_SIGN_IN, intent)
             finish()
-        }
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.emailCreateAccountButton -> {
-                createAccount(binding.fieldEmail.text.toString(), binding.fieldPassword.text.toString())
-            }
-            R.id.emailSignInButton -> signIn(binding.fieldEmail.text.toString(), binding.fieldPassword.text.toString())
-            R.id.signOutButton -> signOut()
-            R.id.verifyEmailButton -> sendEmailVerification()
-            R.id.reloadButton -> reload()
         }
     }
 

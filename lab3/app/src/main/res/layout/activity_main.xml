@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="30dp"
-            android:text="Auth"
+            android:text="@string/authentication"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,7 +24,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Auth"
             app:layout_constraintStart_toStartOf="@+id/auth_title"
             app:layout_constraintTop_toBottomOf="@+id/auth_title" />
 
@@ -32,7 +31,6 @@
             android:id="@+id/auth_edittext_login"
             style="@style/auth_edittext"
             android:layout_marginStart="30dp"
-            android:text="Auth"
             app:layout_constraintBottom_toBottomOf="@+id/auth_textview_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/auth_textview_login"
@@ -43,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Auth"
+            android:text="@string/email"
             app:layout_constraintStart_toStartOf="@+id/auth_errors"
             app:layout_constraintTop_toBottomOf="@+id/auth_errors" />
 
@@ -60,13 +58,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Auth"
+            android:text="@string/pass"
             app:layout_constraintStart_toStartOf="@+id/auth_textview_login"
             app:layout_constraintTop_toBottomOf="@+id/auth_textview_login" />
 
         <EditText
             android:id="@+id/auth_edittext_repeat_pass"
-            android:text="Auth"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/auth_textview_repeat_pass"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/auth_edittext_pass"
@@ -75,10 +73,11 @@
 
         <TextView
             android:id="@+id/auth_textview_repeat_pass"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Auth"
+            android:text="@string/repeat"
             app:layout_constraintStart_toStartOf="@+id/auth_textview_pass"
             app:layout_constraintTop_toBottomOf="@+id/auth_textview_pass" />
 
@@ -87,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Auth"
+            android:text="@string/connect"
             app:layout_constraintStart_toStartOf="@+id/auth_textview_repeat_pass"
             app:layout_constraintTop_toBottomOf="@+id/auth_textview_repeat_pass" />
 
@@ -96,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:text="Register"
+            android:text="@string/register"
             app:layout_constraintStart_toEndOf="@+id/auth_button_enter"
             app:layout_constraintTop_toTopOf="@+id/auth_button_enter" />
 
