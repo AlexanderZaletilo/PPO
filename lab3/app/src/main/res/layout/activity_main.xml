@@ -1,18 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:context=".MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/auth_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:text="Auth"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/auth_errors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Auth"
+            app:layout_constraintStart_toStartOf="@+id/auth_title"
+            app:layout_constraintTop_toBottomOf="@+id/auth_title" />
+
+        <EditText
+            android:id="@+id/auth_edittext_login"
+            style="@style/auth_edittext"
+            android:layout_marginStart="30dp"
+            android:text="Auth"
+            app:layout_constraintBottom_toBottomOf="@+id/auth_textview_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/auth_textview_login"
+            app:layout_constraintTop_toTopOf="@+id/auth_textview_login" />
+
+        <TextView
+            android:id="@+id/auth_textview_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Auth"
+            app:layout_constraintStart_toStartOf="@+id/auth_errors"
+            app:layout_constraintTop_toBottomOf="@+id/auth_errors" />
+
+        <EditText
+            android:id="@+id/auth_edittext_pass"
+            style="@style/auth_edittext"
+            app:layout_constraintBottom_toBottomOf="@+id/auth_textview_pass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/auth_edittext_login"
+            app:layout_constraintTop_toTopOf="@+id/auth_textview_pass" />
+
+        <TextView
+            android:id="@+id/auth_textview_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Auth"
+            app:layout_constraintStart_toStartOf="@+id/auth_textview_login"
+            app:layout_constraintTop_toBottomOf="@+id/auth_textview_login" />
+
+        <EditText
+            android:id="@+id/auth_edittext_repeat_pass"
+            android:text="Auth"
+            app:layout_constraintBottom_toBottomOf="@+id/auth_textview_repeat_pass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/auth_edittext_pass"
+            app:layout_constraintTop_toTopOf="@+id/auth_textview_repeat_pass"
+            style="@style/auth_edittext" />
+
+        <TextView
+            android:id="@+id/auth_textview_repeat_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Auth"
+            app:layout_constraintStart_toStartOf="@+id/auth_textview_pass"
+            app:layout_constraintTop_toBottomOf="@+id/auth_textview_pass" />
+
+        <Button
+            android:id="@+id/auth_button_enter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Auth"
+            app:layout_constraintStart_toStartOf="@+id/auth_textview_repeat_pass"
+            app:layout_constraintTop_toBottomOf="@+id/auth_textview_repeat_pass" />
+
+        <Button
+            android:id="@+id/auth_button_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:text="Register"
+            app:layout_constraintStart_toEndOf="@+id/auth_button_enter"
+            app:layout_constraintTop_toTopOf="@+id/auth_button_enter" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
