@@ -122,7 +122,7 @@ class AuthActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
                     startActivity(Intent(this, MainActivity::class.java))
-                    //finish()
+                    finish()
                 }
                 else
                     errorsTextView.text = "Failure during registration"
