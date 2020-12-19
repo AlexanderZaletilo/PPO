@@ -8,4 +8,9 @@
     <string name="email">Email</string>
     <string name="repeat">Repeat</string>
     <string name="register">Register</string>
+    <string name="create_game_label">Or create your own game and share generated ID</string>
+    <string name="create">Create</string>
+    <string name="join">Join</string>
+    <string name="id_dots">Id...</string>
+    <string name="join_game_label">Join generated game by ID</string>
 </resources>

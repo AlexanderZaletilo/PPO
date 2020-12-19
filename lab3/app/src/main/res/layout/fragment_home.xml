@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent">
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="15dp">
+
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/join_game_label"
+        style="@style/game_lobby_textview" />
+
+    <EditText
+        android:id="@+id/game_lobby_edittext"
+        style="@style/game_lobby_button"
+        android:layout_marginTop="20dp"
+        android:hint="@string/id_dots" />
+
+    <Button
+        android:id="@+id/game_button_join"
+        android:layout_marginTop="10dp"
+        android:text="@string/join"
+        style="@style/game_lobby_button" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/game_lobby_textview"
+        android:layout_marginTop="20dp"
+        android:text="@string/create_game_label" />
+
+    <Button
+        android:id="@+id/game_button_create"
+        android:layout_marginTop="10dp"
+        style="@style/game_lobby_button"
+        android:text="@string/create" />
+
+    <TextView
+        android:id="@+id/game_lobby_errors"
+        style="@style/game_lobby_textview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ну да "/>
-</ScrollView>
+        android:layout_marginTop="20dp"
+        android:textColor="#EA0F0F"
+        android:visibility="gone" />
+</LinearLayout>

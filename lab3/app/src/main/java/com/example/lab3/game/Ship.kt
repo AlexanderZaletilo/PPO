@@ -8,11 +8,11 @@ class Ship {
     constructor(start: Point, end: Point)
     {
         startPoint = start
-        isHorizontal = start.first == end.first
+        isHorizontal = start.row == end.row
         length = if(isHorizontal)
-                    kotlin.math.abs(start.second - end.second)
+                    kotlin.math.abs(start.row - end.row)
                 else
-                    kotlin.math.abs(start.first - end.first)
+                    kotlin.math.abs(start.col - end.col)
         isBrokenParts = Array<Boolean>(length) { false }
     }
 
