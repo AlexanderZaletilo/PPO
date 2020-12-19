@@ -7,6 +7,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:context=".AuthActivity">
 
         <TextView
@@ -77,11 +79,11 @@
 
         <TextView
             android:id="@+id/auth_textview_repeat_pass"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:text="@string/repeat"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/auth_textview_pass"
             app:layout_constraintTop_toBottomOf="@+id/auth_textview_pass" />
 
@@ -89,10 +91,10 @@
             android:id="@+id/auth_button_enter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
             android:text="@string/connect"
-            app:layout_constraintStart_toStartOf="@+id/auth_textview_repeat_pass"
-            app:layout_constraintTop_toBottomOf="@+id/auth_textview_repeat_pass" />
+            app:layout_constraintStart_toStartOf="@+id/auth_remember"
+            app:layout_constraintTop_toBottomOf="@+id/auth_remember" />
 
         <Button
             android:id="@+id/auth_button_switch"
@@ -102,6 +104,15 @@
             android:text="@string/register"
             app:layout_constraintStart_toEndOf="@+id/auth_button_enter"
             app:layout_constraintTop_toTopOf="@+id/auth_button_enter" />
+
+        <CheckBox
+            android:id="@+id/auth_remember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/remember"
+            app:layout_constraintStart_toStartOf="@+id/auth_textview_pass"
+            app:layout_constraintTop_toBottomOf="@+id/auth_textview_repeat_pass" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

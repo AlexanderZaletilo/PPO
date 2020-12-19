@@ -16,7 +16,7 @@
     <fragment
         android:id="@+id/game_dest"
         android:name="com.example.lab3.GameFragment"
-        android:label="Home"
+        android:label="Game"
         tools:layout="@layout/fragment_game">
         <argument app:argType="string"
             android:name="ID"/>

@@ -1,4 +1,4 @@
 package com.example.lab3.game
 
 
-data class Point(val col: Int, val row: Int)
+data class Point(val row: Int, val col: Int)

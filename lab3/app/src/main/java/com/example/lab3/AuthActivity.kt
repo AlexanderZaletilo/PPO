@@ -1,10 +1,13 @@
 package com.example.lab3
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
@@ -13,9 +16,7 @@ import com.google.firebase.ktx.Firebase
 
 class AuthActivity : AppCompatActivity() {
 
-    // [START declare_auth]
     private lateinit var auth: FirebaseAuth
-    // [END declare_auth]
     private var isAuth = true
 
     private var register_title_string: String? = null
@@ -31,7 +32,8 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var loginEditText: EditText
     private lateinit var passEditText: EditText
     private lateinit var errorsTextView: TextView
-
+    private lateinit var checkBox: CheckBox
+    private lateinit var prefs: SharedPreferences
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
@@ -39,7 +41,7 @@ class AuthActivity : AppCompatActivity() {
         auth_title_string = resources.getString(R.string.authentication)
         login_string = resources.getString(R.string.auth)
         register_button_string = resources.getString(R.string.register)
-
+        prefs = getSharedPreferences("main", Context.MODE_PRIVATE)
         switchButton = findViewById(R.id.auth_button_switch)
         connectButton = findViewById(R.id.auth_button_enter)
         repeatTextView = findViewById(R.id.auth_textview_repeat_pass)
@@ -48,18 +50,17 @@ class AuthActivity : AppCompatActivity() {
         loginEditText = findViewById(R.id.auth_edittext_login)
         passEditText = findViewById(R.id.auth_edittext_pass)
         errorsTextView = findViewById(R.id.auth_errors)
-        // setProgressBar(binding.progressBar)
+        checkBox = findViewById(R.id.auth_remember)
         switchButton.setOnClickListener { onSwitchClicked() }
         connectButton.setOnClickListener{ onConnectClicked() }
         auth = Firebase.auth
-    }
-
-    // [START on_start_check_user]
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        //updateUI(currentUser)
+        val remember = prefs.getBoolean("remember", false)
+        if(remember)
+        {
+            loginEditText.setText(prefs.getString("email", ""))
+            passEditText.setText(prefs.getString("pass", ""))
+        }
+        checkBox.isChecked = remember
     }
 
     private fun onSwitchClicked()
@@ -106,10 +107,19 @@ class AuthActivity : AppCompatActivity() {
     private fun onConnectClicked() {
         if(!validateForm())
             return
+        with (prefs.edit()) {
+            putBoolean("remember", checkBox.isChecked)
+            if(checkBox.isChecked) {
+                putString("email", loginEditText.text.toString())
+                putString("pass", passEditText.text.toString())
+            }
+            apply()
+        }
         if(isAuth)
             signIn(loginEditText.text.toString(), passEditText.text.toString())
         else
             createAccount(loginEditText.text.toString(), passEditText.text.toString())
+
     }
 
     private fun createAccount(email: String, password: String) {
@@ -119,8 +129,6 @@ class AuthActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val user = auth.currentUser
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }

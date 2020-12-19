@@ -13,4 +13,5 @@
     <string name="join">Join</string>
     <string name="id_dots">Id...</string>
     <string name="join_game_label">Join generated game by ID</string>
+    <string name="remember">Remember</string>
 </resources>
