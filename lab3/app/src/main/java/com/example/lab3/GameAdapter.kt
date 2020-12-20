@@ -32,7 +32,7 @@ class GameAdapter(val field: Field) : RecyclerView.Adapter<GameAdapter.MyViewHol
     override fun onBindViewHolder(viewHolder: MyViewHolder, i: Int) {
         val row = i / 10
         val col = i % 10
-        val cell = field._field[row][col]
+        val cell = field[row, col]
         viewHolder.cellImageView.setImageResource(R.drawable.ic_item_back)
         if(cell.ship != null)
             viewHolder.cellImageView.isSelected = true

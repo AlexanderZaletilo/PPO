@@ -64,7 +64,6 @@ class HomeFragment : Fragment() {
         }
         return view
     }
-
    /* override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_sequence_list_menu, menu)
         super.onCreateOptionsMenu(menu!!, inflater)

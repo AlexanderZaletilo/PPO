@@ -35,9 +35,82 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintHeight_percent="0.4"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/your_recycler" />
+
+    <CheckBox
+        android:id="@+id/game_ready"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/ready"
+        app:layout_constraintStart_toStartOf="@+id/your_recycler"
+        app:layout_constraintTop_toBottomOf="@+id/your_recycler" />
+
+    <CheckBox
+        android:id="@+id/game_rotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rotate"
+        app:layout_constraintBottom_toBottomOf="@+id/game_button_fire"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/game_button_fire" />
+
+    <Button
+        android:id="@+id/game_button_fire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:enabled="false"
+        android:text="@string/fire"
+        app:layout_constraintBottom_toBottomOf="@+id/game_ready"
+        app:layout_constraintStart_toEndOf="@+id/game_ready"
+        app:layout_constraintTop_toTopOf="@+id/game_ready" />
+
+    <LinearLayout
+        android:id="@+id/game_ship_palette"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_button_fire">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:gravity="center">
+            <View android:foreground="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:gravity="center">
+            <View android:foreground="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <View android:foreground="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+            <View android:background="@drawable/ic_ship" style="@style/game_ship_palette_item"/>
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
