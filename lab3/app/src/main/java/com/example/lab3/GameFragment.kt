@@ -21,13 +21,13 @@ import kotlinx.coroutines.NonCancellable.children
 
 
 class GameFragment : Fragment() {
-
     private val args: GameFragmentArgs by navArgs()
     private lateinit var yourRecycler: RecyclerView
     private lateinit var enemyRecycler: RecyclerView
     private lateinit var title: TextView
     private lateinit var database: DatabaseReference
     private lateinit var rotate: CheckBox
+    private lateinit var fireButton: Button
     private var cell_width = 0
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -38,18 +38,35 @@ class GameFragment : Fragment() {
         yourRecycler = view.findViewById(R.id.your_recycler)
         title = view.findViewById(R.id.game_title_id)
         rotate = view.findViewById(R.id.game_rotate)
+        fireButton = view.findViewById(R.id.game_button_fire)
         val manager = GridLayoutManager(requireContext(), 10)
         yourRecycler.layoutManager = manager
         yourRecycler.adapter = GameAdapter(Field());
         yourRecycler.minimumHeight = yourRecycler.width
-        yourRecycler.setOnDragListener { v, event ->
+        view.setOnDragListener{ v, event ->
             when (event!!.action) {
                 DragEvent.ACTION_DROP -> {
-                    // Displays a message containing the dragged data.
-                    Toast.makeText(context, "${event.x} ${event.y}", Toast.LENGTH_SHORT).show()
-                    val view = event.localState as View
-                    view.x = event.x - (view.width / 2) + yourRecycler.x
-                    view.y = event.y - (view.height / 2) + yourRecycler.y
+                    val ship = (event.localState as View)
+                    if(event.y - ship.height > fireButton.y + 15)
+                    {
+                        ship.x = event.x - (ship.width / 2)
+                        ship.y = event.y - (ship.height / 2)
+                        true
+                    }
+                    else
+                        false
+                }
+                else -> {
+                    true
+                }
+            }
+        }
+        yourRecycler.setOnDragListener { v, event ->
+            val ship = event.localState as View
+            when (event!!.action) {
+                DragEvent.ACTION_DROP -> {
+                    ship.x = event.x - (ship.width / 2) + yourRecycler.x
+                    ship.y = event.y - (ship.height / 2) + yourRecycler.y
                     true
                 }
                 else -> {
@@ -58,19 +75,6 @@ class GameFragment : Fragment() {
             }
         }
         setUpShipPalette(view)
-       /* imageview.apply {
-            imageview.setOnLongClickListener { v: View ->
-                if(rotate.isChecked)
-                    v.rotation = 90.0F
-                val myShadow = MyDragShadowBuilder(this)
-                v.startDrag(
-                        null,   // the data to be dragged
-                        myShadow,   // the drag shadow builder
-                        v,       // no need to use local data
-                        0           // flags (not currently used, set to 0)
-                )
-            }
-        }*/
         database = FirebaseDatabase.getInstance().reference
         if(args.isHost)
         {
@@ -83,24 +87,45 @@ class GameFragment : Fragment() {
 
     private fun setUpShipPalette(view: View)
     {
-        val palette = view.findViewById<LinearLayout>(R.id.game_ship_palette)
-        palette.layoutParams.height = cell_width * 4
-        for(item in palette.children)
-            item.layoutParams.height = cell_width + 5
-        val linears = palette.children.iterator()
-        val first = (linears.next() as LinearLayout).children.iterator()
-        val second = (linears.next() as LinearLayout).children.iterator()
-        first.next().layoutParams.width = 4 * cell_width
-        for(i in 1..4) {
-            first.next().layoutParams.width = cell_width
-            second.next().layoutParams.width = 2 * cell_width
+        val viewListener = View.OnLongClickListener{ v: View ->
+            val ship = v as ShipView
+            if(rotate.isChecked)
+            {
+                v.rotation = if(ship.isHorizontal) 90.0F else 0.0F
+                ship.isHorizontal = !ship.isHorizontal
+            }
+            val myShadow = MyDragShadowBuilder(v)
+            v.startDrag(null, myShadow, v,0)
+            true
         }
-        val third = (linears.next() as LinearLayout).children.iterator()
-        for(i in 1.. 2)
-            third.next().layoutParams.width = 3 * cell_width
-        for(linear in linears)
-            for(item in (linear as LinearLayout).children)
-                item.layoutParams.height = cell_width
+        val ship1_1 = view.findViewById<ShipView>(R.id.ship_1_1)
+        val ship1_2 = view.findViewById<ShipView>(R.id.ship_1_2)
+        val ship1_3 = view.findViewById<ShipView>(R.id.ship_1_3)
+        val ship1_4 = view.findViewById<ShipView>(R.id.ship_1_4)
+        for(item in sequenceOf(ship1_1, ship1_2, ship1_3, ship1_4)) {
+            item.layoutParams.width = cell_width
+            item.length = 1
+        }
+        val ship2_1 = view.findViewById<ShipView>(R.id.ship_2_1)
+        val ship2_2 = view.findViewById<ShipView>(R.id.ship_2_2)
+        val ship2_3 = view.findViewById<ShipView>(R.id.ship_2_3)
+        for(item in sequenceOf(ship2_1, ship2_2, ship2_3)) {
+            item.layoutParams.width = 2 * cell_width
+            item.length = 2
+        }
+        val ship3_1 = view.findViewById<ShipView>(R.id.ship_3_1)
+        val ship3_2 = view.findViewById<ShipView>(R.id.ship_3_2)
+        for(item in sequenceOf(ship3_1, ship3_2)) {
+            item.layoutParams.width = 3 * cell_width
+            item.length = 3
+        }
+        val ship4_1 = view.findViewById<ShipView>(R.id.ship_4_1)
+        ship4_1.layoutParams.width = 4 * cell_width
+        ship4_1.length = 4
+        for(item in sequenceOf(ship1_1, ship1_2, ship1_3, ship1_4, ship2_1, ship2_2, ship2_3, ship3_1, ship3_2, ship4_1)) {
+            item.layoutParams.height = cell_width
+            item.setOnLongClickListener(viewListener)
+        }
     }
     private fun setUpMatrix(matrix: DatabaseReference)
     {

@@ -16,5 +16,5 @@
     <string name="remember">Remember</string>
     <string name="fire">Fire!</string>
     <string name="ready">Ready</string>
-    <string name="rotate">Rotate</string>
+    <string name="rotate">Rotate on Drag</string>
 </resources>
