@@ -11,10 +11,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lab3.game.Field
+import com.example.lab3.game.Point
+import com.example.lab3.game.Ship
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.NonCancellable.children
@@ -22,52 +25,107 @@ import kotlinx.coroutines.NonCancellable.children
 
 class GameFragment : Fragment() {
     private val args: GameFragmentArgs by navArgs()
+
     private lateinit var yourRecycler: RecyclerView
     private lateinit var enemyRecycler: RecyclerView
     private lateinit var title: TextView
-    private lateinit var database: DatabaseReference
     private lateinit var rotate: CheckBox
     private lateinit var fireButton: Button
+    private lateinit var readyCheckBox: CheckBox
+    private lateinit var database: DatabaseReference
+    private lateinit var viewModel: GameViewModel
+
     private var cell_width = 0
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(requireActivity()).get(GameViewModel::class.java)
+        if(viewModel.field == null)
+            viewModel.field = Field()
         val view = inflater.inflate(R.layout.fragment_game, container, false)
-        cell_width = (requireActivity().windowManager.defaultDisplay.width - 20) / 10
+        cell_width = (requireActivity().windowManager.defaultDisplay.width - 20) / 10 - 2
         yourRecycler = view.findViewById(R.id.your_recycler)
         title = view.findViewById(R.id.game_title_id)
         rotate = view.findViewById(R.id.game_rotate)
         fireButton = view.findViewById(R.id.game_button_fire)
+        readyCheckBox = view.findViewById(R.id.game_ready)
         val manager = GridLayoutManager(requireContext(), 10)
         yourRecycler.layoutManager = manager
-        yourRecycler.adapter = GameAdapter(Field());
+        yourRecycler.adapter = GameAdapter(viewModel.field!!);
         yourRecycler.minimumHeight = yourRecycler.width
         view.setOnDragListener{ v, event ->
             when (event!!.action) {
                 DragEvent.ACTION_DROP -> {
-                    val ship = (event.localState as View)
-                    if(event.y - ship.height > fireButton.y + 15)
+                    val shipView = (event.localState as ShipView)
+                    if(event.y - shipView.height > fireButton.y + 15)
                     {
-                        ship.x = event.x - (ship.width / 2)
-                        ship.y = event.y - (ship.height / 2)
+                        shipView.x = event.x - (shipView.width / 2)
+                        shipView.y = event.y - (shipView.height / 2)
+                        if(shipView.associatedFieldShip != null)
+                        {
+                            viewModel.field!!.deleteShip(shipView.associatedFieldShip!!)
+                            viewModel.placedShips[shipView.length - 1].value = viewModel.placedShips[shipView.length - 1].value!! - 1
+                            shipView.associatedFieldShip = null
+                        }
                         true
                     }
-                    else
+                    else {
+                        if (rotate.isChecked && shipView.associatedFieldShip!!.length > 1) {
+                            shipView.rotation = if (shipView.isHorizontal) 90.0F else 0.0F
+                            shipView.isHorizontal = !shipView.isHorizontal
+                        }
                         false
+                    }
                 }
                 else -> {
                     true
                 }
             }
         }
+        for(livedata in viewModel.placedShips)
+            livedata.observe(requireActivity()) {
+                fireButton.isEnabled = viewModel.isAllPlaced()
+            }
         yourRecycler.setOnDragListener { v, event ->
-            val ship = event.localState as View
+            val shipView = event.localState as ShipView
             when (event!!.action) {
                 DragEvent.ACTION_DROP -> {
-                    ship.x = event.x - (ship.width / 2) + yourRecycler.x
-                    ship.y = event.y - (ship.height / 2) + yourRecycler.y
-                    true
+                    val (start, end) = calculateFieldCoords(event.x, event.y, shipView)
+                    if(start.col < 0 || start.col > 9 || start.row < 0 || start.row > 9 ||
+                            end.col < 0 || end.col > 9 || end.row < 0 || end.row > 9)
+                        return@setOnDragListener false
+                    val ship = Ship(start, end)
+                    if(shipView.associatedFieldShip != null) {
+                        viewModel.field!!.deleteShip(shipView.associatedFieldShip!!)
+                    }
+                    if(viewModel.field!!.isAllowedShip(ship))
+                    {
+                        viewModel.field!!.placeShip(ship)
+                        if(ship.isHorizontal) {
+                            shipView.x = yourRecycler.x + cell_width * start.col
+                            shipView.y = yourRecycler.y + cell_width * start.row
+                        }
+                        else
+                        {
+                            shipView.x = yourRecycler.x + cell_width * start.col - cell_width *  (ship.length - 1) * 0.5F
+                            shipView.y = yourRecycler.y + cell_width * start.row + cell_width * (ship.length - 1) * 0.5F
+                        }
+                        if(shipView.associatedFieldShip == null)
+                            viewModel.placedShips[ship.length - 1].value = viewModel.placedShips[ship.length - 1].value!! + 1
+                        shipView.associatedFieldShip = ship
+                        return@setOnDragListener true
+                    }
+                    else {
+                        if (shipView.associatedFieldShip != null)
+                            viewModel.field!!.placeShip(shipView.associatedFieldShip!!)
+                        if(rotate.isChecked && shipView.associatedFieldShip!!.length > 1) {
+                            shipView.rotation = if (ship.isHorizontal) 90.0F else 0.0F
+                            shipView.isHorizontal = !ship.isHorizontal
+                        }
+
+                    }
+                    return@setOnDragListener false
                 }
                 else -> {
                     true
@@ -80,16 +138,47 @@ class GameFragment : Fragment() {
         {
             title.visibility = TextView.VISIBLE
             title.text = "ID: ${args.id}"
-            database.child("matrix").child(args.id).child("ready").setValue(false)
+            //database.child("matrix").child(args.id).child("ready").setValue(false)
+            //database.child("matrix").child(args.id).child
+        }
+        else
+        {
+
         }
         return view
     }
-
+    private fun calculateFieldCoords(centerX: Float, centerY: Float, shipView: ShipView): Pair<Point, Point>
+    {
+        val intX = (centerX / cell_width).toInt()
+        val intY = (centerY / cell_width).toInt()
+        if(shipView.length == 1)
+            return Pair(Point(intY, intX), Point(intY, intX))
+        var startdx = 0
+        var enddx = 0
+        when(shipView.length) {
+            2 -> {
+                startdx = 0
+                enddx = 1
+            }
+            3 -> {
+                startdx = -1
+                enddx = 1
+            }
+            4 -> {
+                startdx = -1
+                enddx = 2
+            }
+        }
+        return  if(shipView.isHorizontal)
+                    Pair(Point(intY, intX + startdx), Point(intY, intX + enddx))
+                else
+                    Pair(Point(intY + startdx, intX), Point(intY + enddx, intX))
+    }
     private fun setUpShipPalette(view: View)
     {
         val viewListener = View.OnLongClickListener{ v: View ->
             val ship = v as ShipView
-            if(rotate.isChecked)
+            if(rotate.isChecked && ship.length > 1)
             {
                 v.rotation = if(ship.isHorizontal) 90.0F else 0.0F
                 ship.isHorizontal = !ship.isHorizontal
