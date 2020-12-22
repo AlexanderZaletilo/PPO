@@ -1,11 +1,8 @@
-package com.example.lab3
+package com.example.lab3.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -15,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.example.lab3.R
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         user = auth.currentUser!!
         val navController: NavController = Navigation.findNavController(
             this,
-            R.id.my_nav_host_fragment
+                R.id.my_nav_host_fragment
         );
         NavigationUI.setupActionBarWithNavController(this, navController);
     }

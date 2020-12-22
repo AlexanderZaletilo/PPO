@@ -1,17 +1,13 @@
-package com.example.lab3
+package com.example.lab3.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lab3.game.Cell
+import com.example.lab3.R
 import com.example.lab3.game.Field
-import java.lang.String
-import java.util.*
+import com.example.lab3.game.ShotsType
 
 
 class GameAdapter(val field: Field, val isClickable: Boolean) : RecyclerView.Adapter<GameAdapter.MyViewHolder>() {

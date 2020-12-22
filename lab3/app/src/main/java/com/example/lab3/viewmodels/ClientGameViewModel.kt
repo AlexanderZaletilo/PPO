@@ -1,14 +1,11 @@
-package com.example.lab3
+package com.example.lab3.viewmodels
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.example.lab3.game.ShotsType
 import com.example.lab3.game.Field
 import com.example.lab3.game.Point
 import com.example.lab3.game.Ship
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
 
 
 class ClientGameViewModel: BaseGameViewModel() {

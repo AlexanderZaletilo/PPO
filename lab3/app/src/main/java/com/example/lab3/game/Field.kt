@@ -1,7 +1,5 @@
 package com.example.lab3.game
 
-import com.example.lab3.ShotsType
-
 class Field {
     val _field: Array<Array<Cell>> = Array(10) { Array(10) { Cell() } }
     val ships = MutableList<Ship>(0) { Ship(Point(0, 0), Point(0, 0)) }

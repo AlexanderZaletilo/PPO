@@ -1,4 +1,4 @@
-package com.example.lab3
+package com.example.lab3.ui.fragments
 
 import android.os.Bundle
 import android.view.DragEvent
@@ -12,10 +12,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lab3.*
+import com.example.lab3.adapters.GameAdapter
 import com.example.lab3.game.Field
 import com.example.lab3.game.Point
 import com.example.lab3.game.Ship
-import com.google.firebase.database.DatabaseReference
+import com.example.lab3.ui.MyDragShadowBuilder
+import com.example.lab3.ui.ShipView
+import com.example.lab3.viewmodels.BaseGameViewModel
+import com.example.lab3.viewmodels.ClientGameViewModel
+import com.example.lab3.viewmodels.HostGameViewModel
 
 
 class GameFragment : Fragment(), BaseGameViewModel.onShotListener {

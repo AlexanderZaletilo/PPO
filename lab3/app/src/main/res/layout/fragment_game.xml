@@ -71,7 +71,7 @@
             app:layout_constraintStart_toStartOf="@+id/your_recycler"
             app:layout_constraintTop_toBottomOf="@+id/your_recycler" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_4_1"
             style="@style/game_ship_palette_item"
             android:layout_marginTop="15dp"
@@ -81,7 +81,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/game_ready" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_1_1"
             style="@style/game_ship_palette_item"
             android:background="@drawable/ic_ship"
@@ -90,7 +90,7 @@
             app:layout_constraintStart_toEndOf="@+id/ship_4_1"
             app:layout_constraintTop_toTopOf="@+id/ship_4_1" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_1_2"
             style="@style/game_ship_palette_item"
             android:background="@drawable/ic_ship"
@@ -99,7 +99,7 @@
             app:layout_constraintStart_toEndOf="@+id/ship_1_1"
             app:layout_constraintTop_toTopOf="@+id/ship_1_1" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_1_3"
             style="@style/game_ship_palette_item"
             android:background="@drawable/ic_ship"
@@ -108,7 +108,7 @@
             app:layout_constraintStart_toEndOf="@+id/ship_1_2"
             app:layout_constraintTop_toTopOf="@+id/ship_1_2" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_1_4"
             style="@style/game_ship_palette_item"
             android:background="@drawable/ic_ship"
@@ -117,7 +117,7 @@
             app:layout_constraintStart_toEndOf="@+id/ship_1_3"
             app:layout_constraintTop_toTopOf="@+id/ship_1_3" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_2_1"
             style="@style/game_ship_palette_item"
             android:layout_marginTop="5dp"
@@ -127,7 +127,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ship_4_1" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_2_2"
             style="@style/game_ship_palette_item"
             android:background="@drawable/ic_ship"
@@ -136,7 +136,7 @@
             app:layout_constraintStart_toEndOf="@+id/ship_2_1"
             app:layout_constraintTop_toTopOf="@+id/ship_2_1" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_2_3"
             style="@style/game_ship_palette_item"
             android:background="@drawable/ic_ship"
@@ -145,7 +145,7 @@
             app:layout_constraintStart_toEndOf="@+id/ship_2_2"
             app:layout_constraintTop_toTopOf="@+id/ship_2_2" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_3_1"
             style="@style/game_ship_palette_item"
             android:background="@drawable/ic_ship"
@@ -154,7 +154,7 @@
             app:layout_constraintStart_toEndOf="@+id/ship_3_2"
             app:layout_constraintTop_toTopOf="@+id/ship_3_2" />
 
-        <com.example.lab3.ShipView
+        <com.example.lab3.ui.ShipView
             android:id="@+id/ship_3_2"
             style="@style/game_ship_palette_item"
             android:layout_marginTop="5dp"

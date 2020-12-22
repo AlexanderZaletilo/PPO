@@ -1,4 +1,4 @@
-package com.example.lab3
+package com.example.lab3.ui
 
 import android.content.Context
 import android.util.AttributeSet
