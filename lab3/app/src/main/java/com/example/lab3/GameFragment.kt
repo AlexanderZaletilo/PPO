@@ -1,15 +1,12 @@
 package com.example.lab3
 
-import android.graphics.Canvas
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.children
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -19,41 +16,57 @@ import com.example.lab3.game.Field
 import com.example.lab3.game.Point
 import com.example.lab3.game.Ship
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.NonCancellable.children
 
 
 class GameFragment : Fragment() {
     private val args: GameFragmentArgs by navArgs()
 
     private lateinit var yourRecycler: RecyclerView
+    private lateinit var yourAdapter: GameAdapter
     private lateinit var enemyRecycler: RecyclerView
+    private lateinit var enemyAdapter: GameAdapter
+    private lateinit var layout: ConstraintLayout
     private lateinit var title: TextView
-    private lateinit var rotate: CheckBox
+    private lateinit var rotateCheckBox: CheckBox
     private lateinit var fireButton: Button
-    private lateinit var readyCheckBox: CheckBox
-    private lateinit var database: DatabaseReference
-    private lateinit var viewModel: GameViewModel
+    private lateinit var readyButton: Button
+    private lateinit var shipViews: List<ShipView>
 
+    private lateinit var hostViewModel: HostGameViewModel
+    private lateinit var clientViewModel: ClientGameViewModel
+    private lateinit var viewModel: BaseGameViewModel
     private var cell_width = 0
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(requireActivity()).get(GameViewModel::class.java)
-        if(viewModel.field == null)
-            viewModel.field = Field()
+        if(args.isHost)
+        {
+            hostViewModel = ViewModelProvider(requireActivity()).get(HostGameViewModel::class.java)
+            viewModel = hostViewModel as BaseGameViewModel
+        }
+        else
+        {
+            clientViewModel = ViewModelProvider(requireActivity()).get(ClientGameViewModel::class.java)
+            viewModel = clientViewModel as BaseGameViewModel
+        }
+        if(viewModel.yourField == null)
+            viewModel.yourField = Field()
         val view = inflater.inflate(R.layout.fragment_game, container, false)
         cell_width = (requireActivity().windowManager.defaultDisplay.width - 20) / 10 - 2
         yourRecycler = view.findViewById(R.id.your_recycler)
+        enemyRecycler = view.findViewById(R.id.enemy_recycler)
         title = view.findViewById(R.id.game_title_id)
-        rotate = view.findViewById(R.id.game_rotate)
+        rotateCheckBox = view.findViewById(R.id.game_rotate)
+        layout = view.findViewById(R.id.game_layout)
         fireButton = view.findViewById(R.id.game_button_fire)
-        readyCheckBox = view.findViewById(R.id.game_ready)
+        readyButton = view.findViewById(R.id.game_ready)
         val manager = GridLayoutManager(requireContext(), 10)
         yourRecycler.layoutManager = manager
-        yourRecycler.adapter = GameAdapter(viewModel.field!!);
-        yourRecycler.minimumHeight = yourRecycler.width
+        yourAdapter = GameAdapter(viewModel.yourField!!)
+        yourRecycler.adapter = yourAdapter
+        val manager2 = GridLayoutManager(requireContext(), 10)
+        enemyRecycler.layoutManager = manager2
         view.setOnDragListener{ v, event ->
             when (event!!.action) {
                 DragEvent.ACTION_DROP -> {
@@ -64,14 +77,14 @@ class GameFragment : Fragment() {
                         shipView.y = event.y - (shipView.height / 2)
                         if(shipView.associatedFieldShip != null)
                         {
-                            viewModel.field!!.deleteShip(shipView.associatedFieldShip!!)
+                            viewModel.yourField!!.deleteShip(shipView.associatedFieldShip!!)
                             viewModel.placedShips[shipView.length - 1].value = viewModel.placedShips[shipView.length - 1].value!! - 1
                             shipView.associatedFieldShip = null
                         }
                         true
                     }
                     else {
-                        if (rotate.isChecked && shipView.associatedFieldShip!!.length > 1) {
+                        if (rotateCheckBox.isChecked && shipView.associatedFieldShip!!.length > 1) {
                             shipView.rotation = if (shipView.isHorizontal) 90.0F else 0.0F
                             shipView.isHorizontal = !shipView.isHorizontal
                         }
@@ -85,7 +98,7 @@ class GameFragment : Fragment() {
         }
         for(livedata in viewModel.placedShips)
             livedata.observe(requireActivity()) {
-                fireButton.isEnabled = viewModel.isAllPlaced()
+                readyButton.isEnabled = viewModel.isAllPlaced()
             }
         yourRecycler.setOnDragListener { v, event ->
             val shipView = event.localState as ShipView
@@ -97,11 +110,11 @@ class GameFragment : Fragment() {
                         return@setOnDragListener false
                     val ship = Ship(start, end)
                     if(shipView.associatedFieldShip != null) {
-                        viewModel.field!!.deleteShip(shipView.associatedFieldShip!!)
+                        viewModel.yourField!!.deleteShip(shipView.associatedFieldShip!!)
                     }
-                    if(viewModel.field!!.isAllowedShip(ship))
+                    if(viewModel.yourField!!.isAllowedShip(ship))
                     {
-                        viewModel.field!!.placeShip(ship)
+                        viewModel.yourField!!.placeShip(ship)
                         if(ship.isHorizontal) {
                             shipView.x = yourRecycler.x + cell_width * start.col
                             shipView.y = yourRecycler.y + cell_width * start.row
@@ -118,8 +131,8 @@ class GameFragment : Fragment() {
                     }
                     else {
                         if (shipView.associatedFieldShip != null)
-                            viewModel.field!!.placeShip(shipView.associatedFieldShip!!)
-                        if(rotate.isChecked && shipView.associatedFieldShip!!.length > 1) {
+                            viewModel.yourField!!.placeShip(shipView.associatedFieldShip!!)
+                        if(rotateCheckBox.isChecked && shipView.associatedFieldShip!!.length > 1) {
                             shipView.rotation = if (ship.isHorizontal) 90.0F else 0.0F
                             shipView.isHorizontal = !ship.isHorizontal
                         }
@@ -133,19 +146,84 @@ class GameFragment : Fragment() {
             }
         }
         setUpShipPalette(view)
-        database = FirebaseDatabase.getInstance().reference
+        viewModel.setUpGame(args.id)
         if(args.isHost)
         {
-            title.visibility = TextView.VISIBLE
             title.text = "ID: ${args.id}"
-            //database.child("matrix").child(args.id).child("ready").setValue(false)
-            //database.child("matrix").child(args.id).child
+            readyButton.setOnClickListener {
+                hostViewModel.hostReady.value = true
+            }
+            hostViewModel.clientConnected.observe(requireActivity()) {
+                if(it)
+                    title.text = "Player connected"
+            }
+            hostViewModel.hostReady.observe(requireActivity()) {
+                if(it)
+                {
+                    viewModel.setReady()
+                    clearAfterShipPlacement()
+                    if(hostViewModel.clientReady.value!!)
+                        hostViewModel.started.value = true
+                }
+            }
+            hostViewModel.clientReady.observe(requireActivity()) {
+                if(it && hostViewModel.hostReady.value!!)
+                    hostViewModel.started.value = true
+            }
+            hostViewModel.started.observe(requireActivity()) {
+                if(it) {
+                    hostViewModel.onGameStarted()
+                    onGameStarted()
+                    hostViewModel.hostFieldChanged.observe(requireActivity()) {yourAdapter.notifyDataSetChanged()}
+                    hostViewModel.clientFieldChanged.observe(requireActivity()) {enemyAdapter.notifyDataSetChanged()}
+                }
+            }
         }
         else
         {
-
+            title.text = "Place ships"
+            readyButton.setOnClickListener {
+                viewModel.clientReady.value = true
+            }
+            clientViewModel.clientReady.observe(requireActivity()) {
+                if(it)
+                {
+                    viewModel.setReady()
+                    clearAfterShipPlacement()
+                    clientViewModel.sendShipsToHost()
+                    if(!clientViewModel.clientReady.value!!)
+                        title.text = "Wait for host"
+                }
+            }
+            clientViewModel.started.observe(requireActivity()) {
+                if(it) {
+                    onGameStarted()
+                    clientViewModel.clientFieldChanged.observe(requireActivity()) {yourAdapter.notifyDataSetChanged()}
+                    clientViewModel.hostFieldChanged.observe(requireActivity()) {enemyAdapter.notifyDataSetChanged()}
+                }
+            }
         }
         return view
+    }
+    private fun onGameStarted()
+    {
+        title.text = "Started"
+        fireButton.isEnabled = true
+        enemyRecycler.visibility = RecyclerView.VISIBLE
+        enemyAdapter = GameAdapter((viewModel.enemyField))
+        enemyRecycler.adapter = enemyAdapter
+    }
+    private fun clearAfterShipPlacement()
+    {
+        for(ship in shipViews) {
+            layout.removeView(ship)
+            ship.visibility = View.GONE
+        }
+        layout.removeView(readyButton)
+        readyButton.visibility = View.GONE
+        layout.removeView(rotateCheckBox)
+        rotateCheckBox.visibility = View.GONE
+        yourAdapter.notifyDataSetChanged()
     }
     private fun calculateFieldCoords(centerX: Float, centerY: Float, shipView: ShipView): Pair<Point, Point>
     {
@@ -178,7 +256,7 @@ class GameFragment : Fragment() {
     {
         val viewListener = View.OnLongClickListener{ v: View ->
             val ship = v as ShipView
-            if(rotate.isChecked && ship.length > 1)
+            if(rotateCheckBox.isChecked && ship.length > 1)
             {
                 v.rotation = if(ship.isHorizontal) 90.0F else 0.0F
                 ship.isHorizontal = !ship.isHorizontal
@@ -211,22 +289,11 @@ class GameFragment : Fragment() {
         val ship4_1 = view.findViewById<ShipView>(R.id.ship_4_1)
         ship4_1.layoutParams.width = 4 * cell_width
         ship4_1.length = 4
-        for(item in sequenceOf(ship1_1, ship1_2, ship1_3, ship1_4, ship2_1, ship2_2, ship2_3, ship3_1, ship3_2, ship4_1)) {
+        shipViews = listOf(ship1_1, ship1_2, ship1_3, ship1_4, ship2_1, ship2_2, ship2_3, ship3_1, ship3_2, ship4_1)
+        for(item in shipViews) {
             item.layoutParams.height = cell_width
             item.setOnLongClickListener(viewListener)
         }
-    }
-    private fun setUpMatrix(matrix: DatabaseReference)
-    {
-
-    }
-}
-
-private class MyDragShadowBuilder(v: View) : View.DragShadowBuilder(v) {
-
-    override fun onDrawShadow(canvas: Canvas) {
-        canvas.rotate(view.rotation)
-        super.onDrawShadow(canvas)
     }
 }
 

@@ -6,6 +6,7 @@
     android:layout_width="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/game_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -16,7 +17,6 @@
             android:id="@+id/game_title_id"
             style="@style/game_lobby_textview"
             android:layout_marginTop="5dp"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,9 +41,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/your_recycler" />
+            app:layout_constraintTop_toBottomOf="@+id/game_button_fire" />
 
-        <CheckBox
+        <Button
             android:id="@+id/game_ready"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,12 +65,12 @@
             android:id="@+id/game_button_fire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
             android:enabled="false"
             android:text="@string/fire"
-            app:layout_constraintBottom_toBottomOf="@+id/game_ready"
-            app:layout_constraintStart_toEndOf="@+id/game_ready"
-            app:layout_constraintTop_toTopOf="@+id/game_ready" />
+            app:layout_constraintEnd_toEndOf="@+id/your_recycler"
+            app:layout_constraintStart_toStartOf="@+id/your_recycler"
+            app:layout_constraintTop_toBottomOf="@+id/your_recycler" />
 
         <com.example.lab3.ShipView
             android:id="@+id/ship_4_1"

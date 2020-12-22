@@ -33,9 +33,18 @@ class GameAdapter(val field: Field) : RecyclerView.Adapter<GameAdapter.MyViewHol
         val row = i / 10
         val col = i % 10
         val cell = field[row, col]
-        viewHolder.cellImageView.setImageResource(R.drawable.ic_item_back)
         if(cell.ship != null)
-            viewHolder.cellImageView.isSelected = true
+            viewHolder.cellImageBack.isSelected = true
+        viewHolder.cellImageView.setImageResource(
+            when(cell.status)
+            {
+                ShotsType.NONE -> R.drawable.ic_baseline_empty_24
+                ShotsType.HIT -> R.drawable.ic_baseline_hit_24
+                ShotsType.MISSED -> R.drawable.ic_baseline_missed_24
+                ShotsType.DESTROYED -> R.drawable.ic_baseline_destroyed
+            }
+        )
+
     }
 
     override fun getItemCount(): Int {
@@ -44,6 +53,7 @@ class GameAdapter(val field: Field) : RecyclerView.Adapter<GameAdapter.MyViewHol
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cellImageView: ImageView = itemView.findViewById(R.id.cell_image_view)
+        val cellImageBack: View = itemView.findViewById(R.id.cell_image_back)
     }
 
 }

@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
         database = FirebaseDatabase.getInstance().getReference()
         createButton.setOnClickListener {
             val id = database.push().getKey()
-            database.child(id!!).child("server").setValue(Firebase.auth.currentUser!!.email)
+            database.child(id!!).child("host").child("email").setValue(Firebase.auth.currentUser!!.email)
             val action = HomeFragmentDirections.toGame(id, true)
             view.findNavController().navigate(action)
         }
@@ -44,10 +44,9 @@ class HomeFragment : Fragment() {
             val listener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     errorsTextView.visibility = TextView.VISIBLE
-                    if(dataSnapshot.exists() && !dataSnapshot.child("client").exists()) {
-                        val value = dataSnapshot.getValue<String>()
-                        database.child(value!!).child("client").setValue(Firebase.auth.currentUser!!.email)
-                        val action = HomeFragmentDirections.toGame(value!!, false)
+                    if(dataSnapshot.exists() && !dataSnapshot.child("client").child("email").exists()) {
+                        database.child(id).child("client").child("email").setValue(Firebase.auth.currentUser!!.email)
+                        val action = HomeFragmentDirections.toGame(id, false)
                         view.findNavController().navigate(action)
                     }
                     else {

@@ -2,12 +2,13 @@ package com.example.lab3.game
 
 class Field {
     val _field: Array<Array<Cell>> = Array(10) {Array(10) {Cell()} }
-
+    val ships = MutableList<Ship>(0) {Ship(Point(0, 0), Point(0, 0))}
     operator fun get(row: Int, col: Int): Cell{
         return _field[row][col]
     }
     fun placeShip(ship: Ship)
     {
+        ships.add(ship)
         if(ship.isHorizontal)
             for(dx in 0 until ship.length) {
                 val cell = this[ship.startPoint.row, ship.startPoint.col + dx]
@@ -21,8 +22,14 @@ class Field {
                 cell.part = dx
             }
     }
+    fun importShips(ships: Array<Ship>)
+    {
+        for(ship in ships)
+            placeShip(ship)
+    }
     fun deleteShip(ship: Ship)
     {
+        ships.remove(ship)
         val start = ship.startPoint
         if(ship.isHorizontal)
             for(dx in 0 until ship.length)
