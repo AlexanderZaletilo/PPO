@@ -3,6 +3,7 @@ package com.example.lab3
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lab3.game.Field
+import com.example.lab3.game.Point
 import com.example.lab3.game.Ship
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -33,6 +34,14 @@ class ClientGameViewModel: BaseGameViewModel() {
                 override fun onCancelled(databaseError: DatabaseError) {}
             }
             lobbyRef.child("started").addValueEventListener(startedListener)
+            val winnerListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if(dataSnapshot.exists() && dataSnapshot.getValue<String>()!! != "")
+                        winner.value = dataSnapshot.getValue<String>()!!
+                }
+                override fun onCancelled(databaseError: DatabaseError) {}
+            }
+            lobbyRef.child("winner").addValueEventListener(winnerListener)
             enemyField = Field()
         }
     }
@@ -41,13 +50,26 @@ class ClientGameViewModel: BaseGameViewModel() {
         matrixRef.child("clientShips")
             .setValue(Ship.ArrayToJsonString(yourField!!.ships.toTypedArray()))
     }
+    fun sendTurnToHost(point: Point)
+    {
+        matrixRef.child("clientShot").setValue(Point.toJsonString(point))
+    }
     fun onGameStarted(){
+        val hostTurnListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(dataSnapshot.exists())
+                    isHostTurn.value = dataSnapshot.getValue<Boolean>()
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        }
+        lobbyRef.child("isHostTurn").addValueEventListener(hostTurnListener)
         for(i in 0..9)
             for(j in 0..9)
             {
                 val cellHostShotsListener = object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         yourField!![i, j].status = ShotsType.values()[dataSnapshot.getValue<Int>()!!]
+                        shotListener?.onShot(Point(i, j), true)
                     }
                     override fun onCancelled(databaseError: DatabaseError) {}
                 }
@@ -56,6 +78,7 @@ class ClientGameViewModel: BaseGameViewModel() {
                 val cellClientShotsListener = object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         enemyField!![i, j].status = ShotsType.values()[dataSnapshot.getValue<Int>()!!]
+                        shotListener?.onShot(Point(i, j), false)
                     }
                     override fun onCancelled(databaseError: DatabaseError) {}
                 }

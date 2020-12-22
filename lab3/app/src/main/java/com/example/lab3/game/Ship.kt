@@ -30,6 +30,13 @@ class Ship {
         this.endPoint = end
         isBrokenParts = Array<Boolean>(length) { false }
     }
+    fun isBroken(): Boolean
+    {
+        for(part in isBrokenParts)
+            if(!part)
+                return false
+        return true
+    }
     companion object {
         fun toJsonString(ship: Ship): String {
             return """{"length": ${ship.length},"isHorizontal": ${ship.isHorizontal},"startPoint": ${Point.toJsonString(ship.startPoint)},"endPoint": ${Point.toJsonString(ship.endPoint)}}"""
