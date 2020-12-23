@@ -1,5 +1,6 @@
 package com.example.lab3.ui.fragments
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -22,6 +23,8 @@ import com.example.lab3.ui.ShipView
 import com.example.lab3.viewmodels.BaseGameViewModel
 import com.example.lab3.viewmodels.ClientGameViewModel
 import com.example.lab3.viewmodels.HostGameViewModel
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 
 class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
@@ -60,8 +63,8 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         opponentImageButton.isEnabled = false
     }
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         if(args.isHost)
         {
@@ -93,6 +96,12 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         viewModel.setUpGame(args.id)
         viewModel.enemyImage.observe(requireActivity()) {
             opponentImageButton.isEnabled = true
+            opponentImageButton.setOnClickListener {
+                ProfileDialogFragment(
+                    viewModel.enemyImage.value!!,
+                    viewModel.enemyName.value!!
+                ).show(requireActivity().supportFragmentManager, "opponentFragment")
+            }
         }
         viewModel.enemyName.observe(requireActivity()) {
             opponentNameTextView.text = it
@@ -115,19 +124,17 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         when (event!!.action) {
             DragEvent.ACTION_DROP -> {
                 val shipView = (event.localState as ShipView)
-                if(event.y - shipView.height > fireButton.y + 15)
-                {
+                if (event.y - shipView.height > fireButton.y + 15) {
                     shipView.x = event.x - (shipView.width / 2)
                     shipView.y = event.y - (shipView.height / 2)
-                    if(shipView.associatedFieldShip != null)
-                    {
+                    if (shipView.associatedFieldShip != null) {
                         viewModel.yourField!!.deleteShip(shipView.associatedFieldShip!!)
-                        viewModel.placedShips[shipView.length - 1].value = viewModel.placedShips[shipView.length - 1].value!! - 1
+                        viewModel.placedShips[shipView.length - 1].value =
+                            viewModel.placedShips[shipView.length - 1].value!! - 1
                         shipView.associatedFieldShip = null
                     }
                     return true
-                }
-                else {
+                } else {
                     if (rotateCheckBox.isChecked && shipView.associatedFieldShip!!.length > 1) {
                         shipView.rotation = if (shipView.isHorizontal) 90.0F else 0.0F
                         shipView.isHorizontal = !shipView.isHorizontal
@@ -146,34 +153,34 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         when (event!!.action) {
             DragEvent.ACTION_DROP -> {
                 val (start, end) = calculateFieldCoords(event.x, event.y, shipView)
-                if(start.col < 0 || start.col > 9 || start.row < 0 || start.row > 9 ||
-                        end.col < 0 || end.col > 9 || end.row < 0 || end.row > 9)
+                if (start.col < 0 || start.col > 9 || start.row < 0 || start.row > 9 ||
+                    end.col < 0 || end.col > 9 || end.row < 0 || end.row > 9
+                )
                     return false
                 val ship = Ship(start, end)
-                if(shipView.associatedFieldShip != null) {
+                if (shipView.associatedFieldShip != null) {
                     viewModel.yourField!!.deleteShip(shipView.associatedFieldShip!!)
                 }
-                if(viewModel.yourField!!.isAllowedShip(ship))
-                {
+                if (viewModel.yourField!!.isAllowedShip(ship)) {
                     viewModel.yourField!!.placeShip(ship)
-                    if(ship.isHorizontal) {
+                    if (ship.isHorizontal) {
                         shipView.x = yourRecycler.x + cell_width * start.col
                         shipView.y = yourRecycler.y + cell_width * start.row
+                    } else {
+                        shipView.x =
+                            yourRecycler.x + cell_width * start.col - cell_width * (ship.length - 1) * 0.5F
+                        shipView.y =
+                            yourRecycler.y + cell_width * start.row + cell_width * (ship.length - 1) * 0.5F
                     }
-                    else
-                    {
-                        shipView.x = yourRecycler.x + cell_width * start.col - cell_width *  (ship.length - 1) * 0.5F
-                        shipView.y = yourRecycler.y + cell_width * start.row + cell_width * (ship.length - 1) * 0.5F
-                    }
-                    if(shipView.associatedFieldShip == null)
-                        viewModel.placedShips[ship.length - 1].value = viewModel.placedShips[ship.length - 1].value!! + 1
+                    if (shipView.associatedFieldShip == null)
+                        viewModel.placedShips[ship.length - 1].value =
+                            viewModel.placedShips[ship.length - 1].value!! + 1
                     shipView.associatedFieldShip = ship
                     return true
-                }
-                else {
+                } else {
                     if (shipView.associatedFieldShip != null)
                         viewModel.yourField!!.placeShip(shipView.associatedFieldShip!!)
-                    if(rotateCheckBox.isChecked && shipView.length > 1) {
+                    if (rotateCheckBox.isChecked && shipView.length > 1) {
                         shipView.rotation = if (ship.isHorizontal) 90.0F else 0.0F
                         shipView.isHorizontal = !ship.isHorizontal
                     }
@@ -323,7 +330,7 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
                 ship.isHorizontal = !ship.isHorizontal
             }
             val myShadow = MyDragShadowBuilder(v)
-            v.startDrag(null, myShadow, v,0)
+            v.startDrag(null, myShadow, v, 0)
             true
         }
         val ship1_1 = view.findViewById<ShipView>(R.id.ship_1_1)
@@ -350,7 +357,18 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         val ship4_1 = view.findViewById<ShipView>(R.id.ship_4_1)
         ship4_1.layoutParams.width = 4 * cell_width
         ship4_1.length = 4
-        shipViews = listOf(ship1_1, ship1_2, ship1_3, ship1_4, ship2_1, ship2_2, ship2_3, ship3_1, ship3_2, ship4_1)
+        shipViews = listOf(
+            ship1_1,
+            ship1_2,
+            ship1_3,
+            ship1_4,
+            ship2_1,
+            ship2_2,
+            ship2_3,
+            ship3_1,
+            ship3_2,
+            ship4_1
+        )
         for(item in shipViews) {
             item.layoutParams.height = cell_width
             item.setOnLongClickListener(viewListener)
