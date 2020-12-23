@@ -11,13 +11,14 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import com.example.lab3.R
+import com.example.lab3.data.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class AuthActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
+    private var repos = UserRepository()
     private var isAuth = true
 
     private var register_title_string: String? = null
@@ -54,7 +55,6 @@ class AuthActivity : AppCompatActivity() {
         checkBox = findViewById(R.id.auth_remember)
         switchButton.setOnClickListener { onSwitchClicked() }
         connectButton.setOnClickListener{ onConnectClicked() }
-        auth = Firebase.auth
         val remember = prefs.getBoolean("remember", false)
         if(remember)
         {
@@ -83,7 +83,6 @@ class AuthActivity : AppCompatActivity() {
         isAuth = !isAuth
     }
     private fun validateForm(): Boolean {
-        var valid = true
         val login = loginEditText.text.toString()
         if (login == "") {
             errorsTextView.text = "Login required."
@@ -127,7 +126,7 @@ class AuthActivity : AppCompatActivity() {
         if (!validateForm()) {
             return
         }
-        auth.createUserWithEmailAndPassword(email, password)
+        repos.createUser(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     startActivity(Intent(this, MainActivity::class.java))
@@ -142,7 +141,7 @@ class AuthActivity : AppCompatActivity() {
         if (!validateForm()) {
             return
         }
-        auth.signInWithEmailAndPassword(email, password)
+        repos.signIn(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     startActivity(Intent(this, MainActivity::class.java))
