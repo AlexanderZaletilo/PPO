@@ -1,5 +1,6 @@
 package com.example.lab3.viewmodels
 
+import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import com.example.lab3.game.ShotsType
 import com.example.lab3.game.Cell
@@ -18,7 +19,7 @@ class HostGameViewModel: BaseGameViewModel() {
     var clientField: Field? = null
     var hostDestroyedShips = Array(4)
     { MutableLiveData<Int>().apply{ value = 0}}
-    var clientDestroyedShips = Array(4)
+    private var clientDestroyedShips = Array(4)
     { MutableLiveData<Int>().apply{ value = 0}}
     var clientConnected =  MutableLiveData<Boolean>().apply{ value = false}
     override fun setUpGame(id: String){
@@ -28,12 +29,18 @@ class HostGameViewModel: BaseGameViewModel() {
             val clientConnectionListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists())
+                    {
+                        val name = dataSnapshot.child("name").getValue<String>()
+                        enemyName.value = name ?: "Anonymous"
+                        GlobalScope.launch(Dispatchers.IO) {
+                            downloadImage(dataSnapshot.child("imageUrl").value as String)
+                        }
                         clientConnected.value = true
+                    }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {}
             }
-            lobbyRef.child("client").child("email")
-                .addValueEventListener(clientConnectionListener)
+            lobbyRef.child("client").addValueEventListener(clientConnectionListener)
             val shipsListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if(dataSnapshot.exists()) {

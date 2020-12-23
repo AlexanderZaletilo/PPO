@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.lab3.ui.fragments.HomeFragmentDirections
 import com.example.lab3.R
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
@@ -18,7 +19,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var database: DatabaseReference
     private lateinit var errorsTextView: TextView
-
+    private lateinit var user: FirebaseUser
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,9 +30,12 @@ class HomeFragment : Fragment() {
         val IdEditText = view.findViewById<EditText>(R.id.game_lobby_edittext)
         errorsTextView = view.findViewById(R.id.game_lobby_errors)
         database = FirebaseDatabase.getInstance().getReference()
+        user = Firebase.auth.currentUser!!
         createButton.setOnClickListener {
             val id = database.push().getKey()
-            database.child(id!!).child("host").child("email").setValue(Firebase.auth.currentUser!!.email)
+            database.child(id!!).child("host")
+                    .setValue(mapOf("name" to user.displayName,
+                    "imageUrl" to user.providerData[0].photoUrl.toString()))
             val action = HomeFragmentDirections.toGame(id, true)
             view.findNavController().navigate(action)
         }
@@ -41,8 +45,10 @@ class HomeFragment : Fragment() {
             val listener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     errorsTextView.visibility = TextView.VISIBLE
-                    if(dataSnapshot.exists() && !dataSnapshot.child("client").child("email").exists()) {
-                        database.child(id).child("client").child("email").setValue(Firebase.auth.currentUser!!.email)
+                    if(dataSnapshot.exists() && !dataSnapshot.child("client").exists()) {
+                        database.child(id!!).child("client")
+                                .setValue(mapOf("name" to user.displayName,
+                                        "imageUrl" to user.providerData[0].photoUrl.toString()))
                         val action = HomeFragmentDirections.toGame(id, false)
                         view.findNavController().navigate(action)
                     }

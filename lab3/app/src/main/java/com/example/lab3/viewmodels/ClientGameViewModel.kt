@@ -6,6 +6,9 @@ import com.example.lab3.game.Point
 import com.example.lab3.game.Ship
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ClientGameViewModel: BaseGameViewModel() {
@@ -14,6 +17,17 @@ class ClientGameViewModel: BaseGameViewModel() {
         if(this.id == null)
         {
             super.setUpGame(id)
+            val hostDataListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val name = dataSnapshot.child("name").getValue<String>()
+                    enemyName.value = name ?: "Anonymous"
+                    GlobalScope.launch(Dispatchers.IO) {
+                        downloadImage(dataSnapshot.child("imageUrl").value as String)
+                    }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {}
+            }
+            lobbyRef.child("host").addListenerForSingleValueEvent(hostDataListener)
             val hostReadyListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists())

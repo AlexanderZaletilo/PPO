@@ -37,6 +37,8 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
     private lateinit var fireButton: Button
     private lateinit var readyButton: Button
     private lateinit var shipViews: List<ShipView>
+    private lateinit var opponentNameTextView: TextView
+    private lateinit var opponentImageButton: ImageButton
 
     private lateinit var hostViewModel: HostGameViewModel
     private lateinit var clientViewModel: ClientGameViewModel
@@ -53,6 +55,9 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         layout = view.findViewById(R.id.game_layout)
         fireButton = view.findViewById(R.id.game_button_fire)
         readyButton = view.findViewById(R.id.game_ready)
+        opponentNameTextView = view.findViewById(R.id.game_opponent)
+        opponentImageButton = view.findViewById(R.id.game_opponent_imagebutton)
+        opponentImageButton.isEnabled = false
     }
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -86,6 +91,12 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         yourRecycler.setOnDragListener(this::recyclerDragListener)
         setUpShipPalette(view)
         viewModel.setUpGame(args.id)
+        viewModel.enemyImage.observe(requireActivity()) {
+            opponentImageButton.isEnabled = true
+        }
+        viewModel.enemyName.observe(requireActivity()) {
+            opponentNameTextView.text = it
+        }
         if(args.isHost)
             setUpHostListeners()
         else
@@ -348,7 +359,10 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.clear()
+        if(args.isHost)
+            hostViewModel.clear()
+        else
+            clientViewModel.clear()
     }
 }
 
