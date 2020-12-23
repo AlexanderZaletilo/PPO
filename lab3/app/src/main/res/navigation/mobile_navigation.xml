@@ -12,6 +12,9 @@
             android:id="@+id/to_game"
             app:destination="@+id/game_dest">
         </action>
+        <action
+            android:id="@+id/to_user"
+            app:destination="@id/user_dest"/>
     </fragment>
     <fragment
         android:id="@+id/game_dest"
@@ -23,4 +26,9 @@
         <argument app:argType="boolean"
             android:name="isHost"/>
     </fragment>
+    <fragment
+        android:id="@+id/user_dest"
+        android:name="com.example.lab3.ui.fragments.UserFragment"
+        android:label="User"
+        tools:layout="@layout/fragment_user"/>
 </navigation>

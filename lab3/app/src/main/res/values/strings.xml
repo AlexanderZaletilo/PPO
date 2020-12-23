@@ -17,4 +17,13 @@
     <string name="fire">Fire!</string>
     <string name="ready">Ready</string>
     <string name="rotate">Rotate on Drag</string>
+    <string name="change_name">Change name</string>
+    <string name="enter_name">Enter name...</string>
+    <string name="change_image">Change Image</string>
+    <string name="profile">Profile</string>
+    <string name="stats">Stats</string>
+    <string name="history">History</string>
+    <string name="change">Change</string>
+    <string name="upload_image">Upload image</string>
+    <string name="use_gravatar">Use Gravatar</string>
 </resources>

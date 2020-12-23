@@ -1,16 +1,13 @@
 package com.example.lab3.ui.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.example.lab3.HomeFragmentDirections
+import com.example.lab3.ui.fragments.HomeFragmentDirections
 import com.example.lab3.R
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -27,6 +24,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        setHasOptionsMenu(true)
         val createButton = view.findViewById<Button>(R.id.game_button_create)
         val IdEditText = view.findViewById<EditText>(R.id.game_lobby_edittext)
         errorsTextView = view.findViewById(R.id.game_lobby_errors)
@@ -62,14 +60,16 @@ class HomeFragment : Fragment() {
         }
         return view
     }
-   /* override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_sequence_list_menu, menu)
-        super.onCreateOptionsMenu(menu!!, inflater)
-    }*/
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.home_toolbar_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-       /* when (item.itemId) {
-
-        }*/
+        when (item.itemId) {
+            R.id.action_to_user -> {
+                requireView().findNavController().navigate(HomeFragmentDirections.toUser())
+            }
+        }
         return super.onOptionsItemSelected(item)
     }
 }
