@@ -9,17 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.lab3.ui.fragments.HomeFragmentDirections
 import com.example.lab3.R
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
+import com.example.lab3.data.ClientGameFireRepository
+import com.example.lab3.data.HostGameFireRepository
 
 
 class HomeFragment : Fragment() {
-
-    private lateinit var database: DatabaseReference
     private lateinit var errorsTextView: TextView
-    private lateinit var user: FirebaseUser
+    private var hostRepos = HostGameFireRepository.getInstance()
+    private var clientRepos =  ClientGameFireRepository.getInstance()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,40 +26,27 @@ class HomeFragment : Fragment() {
         val createButton = view.findViewById<Button>(R.id.game_button_create)
         val IdEditText = view.findViewById<EditText>(R.id.game_lobby_edittext)
         errorsTextView = view.findViewById(R.id.game_lobby_errors)
-        database = FirebaseDatabase.getInstance().getReference()
-        user = Firebase.auth.currentUser!!
+        hostRepos.setUpUser()
+        clientRepos.setUpUser()
         createButton.setOnClickListener {
-            val id = database.push().getKey()
-            database.child(id!!).child("host")
-                    .setValue(mapOf("name" to user.displayName,
-                    "imageUrl" to user.providerData[0].photoUrl.toString()))
-            val action = HomeFragmentDirections.toGame(id, true)
+            val action = HomeFragmentDirections.toGame(hostRepos.setUpGameLobby(), true)
             view.findNavController().navigate(action)
         }
         val joinButton = view.findViewById<Button>(R.id.game_button_join)
         joinButton.setOnClickListener {
             val id = IdEditText.text.toString()
-            val listener = object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    errorsTextView.visibility = TextView.VISIBLE
-                    if(dataSnapshot.exists() && !dataSnapshot.child("client").exists()) {
-                        database.child(id!!).child("client")
-                                .setValue(mapOf("name" to user.displayName,
-                                        "imageUrl" to user.providerData[0].photoUrl.toString()))
-                        val action = HomeFragmentDirections.toGame(id, false)
-                        view.findNavController().navigate(action)
-                    }
-                    else {
-                        errorsTextView.text = "Invalid ID"
-                        errorsTextView.visibility = TextView.VISIBLE
-                    }
+            val joinCallback = { joined: Boolean ->
+                if(joined) {
+                    val action = HomeFragmentDirections.toGame(id, false)
+                    view.findNavController().navigate(action)
                 }
-                override fun onCancelled(databaseError: DatabaseError) {
+                else
+                {
+                    errorsTextView.text = "Invalid ID"
                     errorsTextView.visibility = TextView.VISIBLE
-                    errorsTextView.text = databaseError.toException().toString()
                 }
             }
-            database.child(id).addListenerForSingleValueEvent(listener)
+            clientRepos.tryJoin(id, joinCallback)
         }
         return view
     }

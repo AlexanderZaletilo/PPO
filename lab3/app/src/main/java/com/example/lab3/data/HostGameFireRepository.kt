@@ -11,13 +11,20 @@ import kotlinx.coroutines.launch
 
 class HostGameFireRepository: BaseGameFireRepository() {
 
+    fun setUpGameLobby(): String {
+        val id = database.push().getKey()
+        database.child(id!!).child("host")
+                .setValue(mapOf("name" to user!!.displayName,
+                        "imageUrl" to user!!.providerData[0].photoUrl.toString()))
+        return id
+    }
     fun setUpGame(id: String,
                   clientConnectedCallback: ((String, String?) -> Unit),
                   shipsSentCallback: ((String) -> Unit)
     ){
         super.setUpRefs(id)
         lobbyRef.child("host").child("ready").setValue(false)
-        val clientConnectionListener = object : ValueEventListener {
+        val clientConnectionListener = object : BaseValueListener() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     clientConnectedCallback(
@@ -26,19 +33,17 @@ class HostGameFireRepository: BaseGameFireRepository() {
                     )
                 }
             }
-            override fun onCancelled(databaseError: DatabaseError) {}
         }
         lobbyRef.child("client").addValueEventListener(clientConnectionListener)
         listenPairs.add(
             Pair(lobbyRef.child("client"), clientConnectionListener)
         )
-        val shipsListener = object : ValueEventListener {
+        val shipsListener = object : BaseValueListener() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists()) {
                     shipsSentCallback(dataSnapshot.getValue<String>()!!)
                 }
             }
-            override fun onCancelled(databaseError: DatabaseError) {}
         }
         matrixRef.child("clientShips").addValueEventListener(shipsListener)
         listenPairs.add(
@@ -81,13 +86,12 @@ class HostGameFireRepository: BaseGameFireRepository() {
         setUpShotMatrices()
         lobbyRef.child("isHostTurn").setValue(true)
         lobbyRef.child("started").setValue(true)
-        val clientShotListener = object : ValueEventListener {
+        val clientShotListener = object : BaseValueListener() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists()) {
                     clientShotCallback(dataSnapshot.getValue<String>()!!)
                 }
             }
-            override fun onCancelled(databaseError: DatabaseError) {}
         }
         matrixRef.child("clientShot")
             .addValueEventListener(clientShotListener)

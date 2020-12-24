@@ -11,6 +11,7 @@ import com.example.lab3.game.Ship
 import com.example.lab3.game.ShotsType
 import com.example.lab3.ui.fragments.HomeFragmentDirections
 import com.example.lab3.viewmodels.BaseGameViewModel
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 open class BaseGameFireRepository {
     protected var id: String? = null
     protected val auth = Firebase.auth
+    var user: FirebaseUser? = null
     protected val database = FirebaseDatabase.getInstance().reference
     protected lateinit var matrixRef: DatabaseReference
     protected lateinit var lobbyRef: DatabaseReference
@@ -31,13 +33,18 @@ open class BaseGameFireRepository {
     protected var listenPairs = mutableListOf<Pair<DatabaseReference, ValueEventListener>>()
     var onError = MutableLiveData<Boolean>()
     var clearedRefs = false
-    abstract  inner class baseValueListener : ValueEventListener {
+    abstract  inner class BaseValueListener : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
             onError.value = true
             clear()
         }
 
     }
+    fun setUpUser()
+    {
+        user = auth.currentUser
+    }
+
     open fun clear()
     {
         for((ref, listener) in listenPairs)
