@@ -59,6 +59,9 @@ class HomeFragment : Fragment() {
             R.id.action_to_user -> {
                 requireView().findNavController().navigate(HomeFragmentDirections.toUser())
             }
+            R.id.action_to_stats -> {
+                requireView().findNavController().navigate(HomeFragmentDirections.toStats())
+            }
         }
         return super.onOptionsItemSelected(item)
     }

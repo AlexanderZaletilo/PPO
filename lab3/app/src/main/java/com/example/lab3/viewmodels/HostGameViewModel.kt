@@ -1,22 +1,36 @@
 package com.example.lab3.viewmodels
 
-import android.graphics.Bitmap
+import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.lab3.data.HostGameFireRepository
-import com.example.lab3.game.ShotsType
-import com.example.lab3.game.Cell
-import com.example.lab3.game.Field
-import com.example.lab3.game.Point
-import com.example.lab3.game.Ship
-import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
+import com.example.lab3.game.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.util.*
 
+class HostViewModelFactory(private val context: Application): ViewModelProvider.NewInstanceFactory() {
+    companion object {
+        var instance: HostViewModelFactory? = null
+        var viewModelInstance: HostGameViewModel? = null
+        fun getInstance(context: Application): HostViewModelFactory{
+            if(instance == null)
+                instance = HostViewModelFactory(context)
+            return instance!!
+        }
+    }
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T
+    {
+        if(viewModelInstance == null)
+            viewModelInstance = HostGameViewModel(context)
+        return viewModelInstance as T
+    }
+}
 
-class HostGameViewModel: BaseGameViewModel() {
+class HostGameViewModel(context: Application): BaseGameViewModel(context) {
     private var hostRepos = HostGameFireRepository.getInstance()
     var clientField: Field? = null
     var hostDestroyedShips = Array(4)
@@ -24,6 +38,8 @@ class HostGameViewModel: BaseGameViewModel() {
     private var clientDestroyedShips = Array(4)
     { MutableLiveData<Int>().apply{ value = 0}}
     var clientConnected =  MutableLiveData<Boolean>().apply{ value = false}
+    private var hostStats: GameStats? = null
+    private var clientStats: GameStats? = null
     init {
         repos = hostRepos
         onError = repos.onError
@@ -46,6 +62,8 @@ class HostGameViewModel: BaseGameViewModel() {
         hostRepos.setUpGame(id, clientConnectedCallback, shipsSentCallback)
     }
     fun onGameStarted(){
+        hostStats = GameStats(enemyName.value ?: "Anonymous", Date())
+        clientStats = GameStats(repos.user!!.displayName ?: "Anonymous", Date())
         hostRepos.onGameStarted {
             if(!isHostTurn.value!!) {
                 val point = Point.fromJsonObject(JSONObject(it))
@@ -59,12 +77,14 @@ class HostGameViewModel: BaseGameViewModel() {
         val checkCell: Cell
         val checkField: Field
         val field: Field
+        val stats: GameStats
         if(isHost)
         {
             field = enemyField
             cell = enemyField[point]
             checkField = clientField!!
             checkCell = clientField!![point]
+            stats = hostStats!!
         }
         else
         {
@@ -72,15 +92,19 @@ class HostGameViewModel: BaseGameViewModel() {
             cell = yourField!![point]
             checkField = yourField!!
             checkCell = cell
+            stats = clientStats!!
         }
         if(cell.status != ShotsType.NONE)
             return
-        if(checkCell.ship == null)
+        if(checkCell.ship == null) {
             cell.status = ShotsType.MISSED
+        }
         else {
             cell.status = ShotsType.HIT
+            stats.hits += 1
             processShotCell(checkField, field, checkCell, isHost)
         }
+        stats.shots += 1
         applyShotChanges(point, isHost, cell.status)
         if(cell.status != ShotsType.HIT) {
             isHostTurn.value = isHostTurn.value!! xor true
@@ -105,12 +129,25 @@ class HostGameViewModel: BaseGameViewModel() {
             destroyedShips[cell.ship!!.length - 1].value = destroyedShips[cell.ship!!.length - 1].value!! + 1
             if(isAllShipsDestroyed(destroyedShips))
             {
+                completeAndSendStats(isHost)
                 winner.value = if(isHost) "host" else "client"
                 hostRepos.setWinner(winner.value!!)
             }
         }
     }
-
+    private fun completeAndSendStats(isHostWinner: Boolean)
+    {
+        hostStats!!.shipsDestroyedCount = clientDestroyedShips.map{ it.value!!}.toTypedArray()
+        clientStats!!.shipsDestroyedCount = hostDestroyedShips.map{ it.value!!}.toTypedArray()
+        hostStats!!.isWin = isHostWinner
+        clientStats!!.isWin = !isHostWinner
+        hostStats!!.ended = Date()
+        clientStats!!.ended = Date()
+        hostRepos.sendStats(clientStats!!)
+        GlobalScope.launch(Dispatchers.IO) {
+            statsRepos.insertStats(hostStats!!)
+        }
+    }
     private fun isAllShipsDestroyed(shipsCounter: Array<MutableLiveData<Int>>): Boolean
     {
         for((i, live) in shipsCounter.withIndex())

@@ -10,11 +10,13 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/to_game"
-            app:destination="@+id/game_dest">
-        </action>
+            app:destination="@+id/game_dest"/>
         <action
             android:id="@+id/to_user"
             app:destination="@id/user_dest"/>
+        <action
+            android:id="@+id/to_stats"
+            app:destination="@id/stats_dest"/>
     </fragment>
     <fragment
         android:id="@+id/game_dest"
@@ -31,4 +33,9 @@
         android:name="com.example.lab3.ui.fragments.UserFragment"
         android:label="User"
         tools:layout="@layout/fragment_user"/>
+    <fragment
+        android:id="@+id/stats_dest"
+        android:name="com.example.lab3.ui.fragments.StatsFragment"
+        android:label="Stats"
+        tools:layout="@layout/fragment_stats"/>
 </navigation>

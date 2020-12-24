@@ -1,16 +1,37 @@
 package com.example.lab3.viewmodels
 
-import androidx.lifecycle.MutableLiveData
+import android.app.Application
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.lab3.data.ClientGameFireRepository
 import com.example.lab3.game.ShotsType
 import com.example.lab3.game.Field
+import com.example.lab3.game.GameStats
 import com.example.lab3.game.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+class ClientViewModelFactory(private val context: Application): ViewModelProvider.NewInstanceFactory() {
+    companion object {
+        var instance: ClientViewModelFactory? = null
+        var viewModelInstance: ClientGameViewModel? = null
+        fun getInstance(context: Application): ClientViewModelFactory{
+            if(instance == null)
+                instance = ClientViewModelFactory(context)
+            return instance!!
+        }
+    }
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T
+    {
+        if(viewModelInstance == null)
+            viewModelInstance = ClientGameViewModel(context)
+        return viewModelInstance as T
+    }
+}
 
-class ClientGameViewModel: BaseGameViewModel() {
+
+class ClientGameViewModel(context: Application): BaseGameViewModel(context) {
     private var clientRepos =  ClientGameFireRepository.getInstance()
     init {
         repos = clientRepos
@@ -53,8 +74,17 @@ class ClientGameViewModel: BaseGameViewModel() {
             shotListener?.onShot(Point(row, col), false)
             Unit
         }
-        clientRepos.onGameStarted(hostTurnsCallback,
-                                  cellHostShotCallback,
-                                  cellClientShotCallback)
+        val shipStatsCallback = { encoded: String ->
+            GlobalScope.launch(Dispatchers.IO) {
+                statsRepos.insertStats(GameStats.fromJSONString(encoded))
+            }
+            Unit
+        }
+        clientRepos.onGameStarted(
+            hostTurnsCallback,
+            cellHostShotCallback,
+            cellClientShotCallback,
+            shipStatsCallback
+        )
     }
 }

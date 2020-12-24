@@ -65,8 +65,23 @@ class ClientGameFireRepository: BaseGameFireRepository() {
 
     fun onGameStarted(hostTurnCallback: ((Boolean) -> Unit),
                       hostShotCallback: ((Int, Int, Int) -> Unit),
-                      clientShotCallback: ((Int, Int, Int) -> Unit))
+                      clientShotCallback: ((Int, Int, Int) -> Unit),
+                      shipStatsCallback: ((String) -> Unit))
     {
+        val shipStatsListener = object: BaseValueListener() {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    val value = dataSnapshot.getValue<String>()
+                    if(value != null)
+                        shipStatsCallback(value)
+                }
+            }
+        }
+        lobbyRef.child("clientStats").addValueEventListener(shipStatsListener)
+        listenPairs.add(
+            Pair(lobbyRef.child("clientStats"), shipStatsListener)
+        )
         val hostTurnListener = object : BaseValueListener() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists())

@@ -33,4 +33,9 @@
     <string name="you_lost">You lost :(</string>
     <string name="exit_game">Do you really want to leave? Game is not ended.</string>
     <string name="no">No</string>
+    <string name="versus">Versus:</string>
+    <string name="destroyed_ships">Destroyed ships:</string>
+    <string name="started">Started</string>
+    <string name="ended">Ended</string>
+    <string name="shots_hits">Hits/Shots:</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.lab3.data
 
+import com.example.lab3.game.GameStats
 import com.example.lab3.game.Point
 import com.example.lab3.game.ShotsType
 import com.google.firebase.database.*
@@ -7,10 +8,10 @@ import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 class HostGameFireRepository: BaseGameFireRepository() {
-
     fun setUpGameLobby(): String {
         val id = database.push().getKey()
         database.child(id!!).child("host")
@@ -98,6 +99,10 @@ class HostGameFireRepository: BaseGameFireRepository() {
         listenPairs.add(
             Pair(matrixRef.child("clientShot"), clientShotListener)
         )
+    }
+    fun sendStats(stats: GameStats)
+    {
+        lobbyRef.child("clientStats").setValue(GameStats.toJsonString(stats))
     }
     companion object {
         private var instance: HostGameFireRepository? = null

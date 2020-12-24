@@ -1,11 +1,15 @@
 package com.example.lab3.viewmodels
 
+import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lab3.data.BaseGameFireRepository
+import com.example.lab3.data.StatsRepository
 import com.example.lab3.game.Field
+import com.example.lab3.game.GameStats
 import com.example.lab3.game.Point
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -17,9 +21,10 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 
 
-open class BaseGameViewModel: ViewModel() {
+open class BaseGameViewModel(val context: Application): AndroidViewModel(context) {
     var isHost = true
     protected lateinit var repos: BaseGameFireRepository
+    protected var statsRepos = StatsRepository(context)
     var yourField: Field? = null
     var enemyField: Field = Field()
     var placedShips = Array(4)
@@ -53,6 +58,7 @@ open class BaseGameViewModel: ViewModel() {
     open fun clear()
     {
         yourField = null
+        enemyField = Field()
         shotListener = null
         hostReady.value = false
         clientReady.value = false
@@ -65,6 +71,12 @@ open class BaseGameViewModel: ViewModel() {
         enemyName.value = null
         if(!repos.clearedRefs)
             GlobalScope.launch(Dispatchers.IO) { repos.clear() }
+    }
+    fun insertStats(stats: GameStats)
+    {
+        GlobalScope.launch(Dispatchers.IO){
+            statsRepos.insertStats(stats)
+        }
     }
     fun downloadImage(path: String)
     {

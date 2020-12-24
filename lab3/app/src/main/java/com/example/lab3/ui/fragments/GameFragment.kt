@@ -25,9 +25,7 @@ import com.example.lab3.game.Ship
 import com.example.lab3.ui.MyDragShadowBuilder
 import com.example.lab3.ui.ShipView
 import com.example.lab3.ui.activities.MainActivity
-import com.example.lab3.viewmodels.BaseGameViewModel
-import com.example.lab3.viewmodels.ClientGameViewModel
-import com.example.lab3.viewmodels.HostGameViewModel
+import com.example.lab3.viewmodels.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
@@ -99,12 +97,14 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener,
     ): View? {
         if(args.isHost)
         {
-            hostViewModel = ViewModelProvider(main_activity).get(HostGameViewModel::class.java)
+            hostViewModel = ViewModelProvider(this, HostViewModelFactory.getInstance(main_activity.application))
+                .get(HostGameViewModel::class.java)
             viewModel = hostViewModel
         }
         else
         {
-            clientViewModel = ViewModelProvider(main_activity).get(ClientGameViewModel::class.java)
+            clientViewModel = ViewModelProvider(this, ClientViewModelFactory.getInstance(main_activity.application))
+                .get(ClientGameViewModel::class.java)
             viewModel = clientViewModel
         }
         if(viewModel.yourField == null)
