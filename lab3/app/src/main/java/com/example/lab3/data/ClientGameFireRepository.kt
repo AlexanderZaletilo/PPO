@@ -35,6 +35,9 @@ class ClientGameFireRepository: BaseGameFireRepository() {
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }
+        listenPairs.add(
+            Pair(lobbyRef.child("host"), hostDataListener)
+        )
         lobbyRef.child("host").addListenerForSingleValueEvent(hostDataListener)
         val hostReadyListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -43,7 +46,10 @@ class ClientGameFireRepository: BaseGameFireRepository() {
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }
-        database.child(id).child("host").child("ready")
+        listenPairs.add(
+            Pair(lobbyRef.child("host").child("ready"), hostReadyListener)
+        )
+        lobbyRef.child("host").child("ready")
             .addValueEventListener(hostReadyListener)
         val startedListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -52,14 +58,23 @@ class ClientGameFireRepository: BaseGameFireRepository() {
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }
+        listenPairs.add(
+            Pair(lobbyRef.child("started").child("ready"), startedListener)
+        )
         lobbyRef.child("started").addValueEventListener(startedListener)
         val winnerListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getValue<String>()!! != "")
-                    gotWinnerCallback(dataSnapshot.getValue<String>()!!)
+                if(dataSnapshot.exists()) {
+                    val value = dataSnapshot.getValue<String>()
+                    if (value != null && value != "")
+                        gotWinnerCallback(value)
+                }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }
+        listenPairs.add(
+            Pair(lobbyRef.child("winner").child("ready"), winnerListener)
+        )
         lobbyRef.child("winner").addValueEventListener(winnerListener)
     }
 
@@ -70,30 +85,47 @@ class ClientGameFireRepository: BaseGameFireRepository() {
         val hostTurnListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists())
-                    hostTurnCallback(dataSnapshot.getValue<Boolean>()!!)
+                {
+                    val value = dataSnapshot.getValue<Boolean>()
+                    if(value != null)
+                        hostTurnCallback(value)
+                }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }
         lobbyRef.child("isHostTurn").addValueEventListener(hostTurnListener)
+        listenPairs.add(
+            Pair(lobbyRef.child("isHostTurn"), hostTurnListener)
+        )
         for(i in 0..9)
             for(j in 0..9)
             {
                 val cellHostShotsListener = object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        hostShotCallback(i, j, dataSnapshot.getValue<Int>()!!)
+                        val value = dataSnapshot.getValue<Int>()
+                        if(value != null)
+                            hostShotCallback(i, j, dataSnapshot.getValue<Int>()!!)
                     }
                     override fun onCancelled(databaseError: DatabaseError) {}
                 }
                 hostShotsRef.child(i.toString()).child(j.toString())
                     .addValueEventListener(cellHostShotsListener)
+                listenPairs.add(
+                    Pair(hostShotsRef.child(i.toString()).child(j.toString()), cellHostShotsListener)
+                )
                 val cellClientShotsListener = object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        clientShotCallback(i, j, dataSnapshot.getValue<Int>()!!)
+                        val value = dataSnapshot.getValue<Int>()
+                        if(value != null)
+                            clientShotCallback(i, j, value)
                     }
                     override fun onCancelled(databaseError: DatabaseError) {}
                 }
                 clientShotsRef.child(i.toString()).child(j.toString())
                     .addValueEventListener(cellClientShotsListener)
+                listenPairs.add(
+                    Pair(clientShotsRef.child(i.toString()).child(j.toString()), cellHostShotsListener)
+                )
             }
     }
 

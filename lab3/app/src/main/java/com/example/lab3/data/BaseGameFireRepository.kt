@@ -28,7 +28,23 @@ open class BaseGameFireRepository {
     protected lateinit var lobbyRef: DatabaseReference
     protected lateinit var clientShotsRef: DatabaseReference
     protected lateinit var hostShotsRef: DatabaseReference
+    protected var listenPairs = mutableListOf<Pair<DatabaseReference, ValueEventListener>>()
+    var onError = MutableLiveData<Boolean>()
+    var clearedRefs = false
+    abstract  inner class baseValueListener : ValueEventListener {
+        override fun onCancelled(error: DatabaseError) {
+            onError.value = true
+            clear()
+        }
 
+    }
+    open fun clear()
+    {
+        for((ref, listener) in listenPairs)
+            ref.removeEventListener(listener)
+        listenPairs.clear()
+        clearedRefs = true
+    }
     fun setUpRefs(id: String)
     {
         this.id = id

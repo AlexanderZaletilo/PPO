@@ -11,6 +11,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 
 
@@ -29,6 +32,7 @@ open class BaseGameViewModel: ViewModel() {
     var winner = MutableLiveData<String>().apply{ value = ""}
     var enemyName = MutableLiveData<String>()
     var enemyImage = MutableLiveData<Bitmap>()
+    lateinit var onError: MutableLiveData<Boolean>
     interface onShotListener{
         fun onShot(point: Point, isHost: Boolean)
     }
@@ -59,6 +63,8 @@ open class BaseGameViewModel: ViewModel() {
         { MutableLiveData<Int>().apply{ value = 0}}
         enemyImage.value = null
         enemyName.value = null
+        if(!repos.clearedRefs)
+            GlobalScope.launch(Dispatchers.IO) { repos.clear() }
     }
     fun downloadImage(path: String)
     {

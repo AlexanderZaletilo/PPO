@@ -27,4 +27,10 @@
     <string name="upload_image">Upload image</string>
     <string name="use_gravatar">Use Gravatar</string>
     <string name="opponent">Opponent:</string>
+    <string name="yes">Ok</string>
+    <string name="error">Error! Game cannot be continued.</string>
+    <string name="you_won">You won!</string>
+    <string name="you_lost">You lost :(</string>
+    <string name="exit_game">Do you really want to leave? Game is not ended.</string>
+    <string name="no">No</string>
 </resources>

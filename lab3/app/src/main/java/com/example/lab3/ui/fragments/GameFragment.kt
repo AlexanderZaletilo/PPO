@@ -1,5 +1,6 @@
 package com.example.lab3.ui.fragments
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.DragEvent
@@ -7,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +24,7 @@ import com.example.lab3.game.Point
 import com.example.lab3.game.Ship
 import com.example.lab3.ui.MyDragShadowBuilder
 import com.example.lab3.ui.ShipView
+import com.example.lab3.ui.activities.MainActivity
 import com.example.lab3.viewmodels.BaseGameViewModel
 import com.example.lab3.viewmodels.ClientGameViewModel
 import com.example.lab3.viewmodels.HostGameViewModel
@@ -27,7 +32,8 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 
-class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
+class GameFragment : Fragment(), BaseGameViewModel.onShotListener,
+    ExitDialogFragment.ExitDialogListener {
     private val args: GameFragmentArgs by navArgs()
 
     private lateinit var yourRecycler: RecyclerView
@@ -46,11 +52,36 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
     private lateinit var hostViewModel: HostGameViewModel
     private lateinit var clientViewModel: ClientGameViewModel
     private lateinit var viewModel: BaseGameViewModel
+    private lateinit var main_activity: MainActivity
     private var cell_width = 0
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        main_activity = context as MainActivity
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val fragment = this
+        val callback: OnBackPressedCallback = object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                if(viewModel.winner.value != "" || viewModel.onError.value == true || !viewModel.started.value!! )
+                {
+                    findNavController().navigateUp()
+                    return@handleOnBackPressed
+                }
+                else
+                {
+                    ExitDialogFragment(this@GameFragment)
+                        .show(main_activity.supportFragmentManager, "exitDialogFragment")
+                }
+            }
+        }
+        main_activity.onBackPressedDispatcher.addCallback(this, callback)
+    }
 
     private fun findViews(view: View)
     {
-        cell_width = (requireActivity().windowManager.defaultDisplay.width - 20) / 10 - 2
+        cell_width = (main_activity.windowManager.defaultDisplay.width - 20) / 10 - 2
         yourRecycler = view.findViewById(R.id.your_recycler)
         enemyRecycler = view.findViewById(R.id.enemy_recycler)
         title = view.findViewById(R.id.game_title_id)
@@ -68,54 +99,60 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
     ): View? {
         if(args.isHost)
         {
-            hostViewModel = ViewModelProvider(requireActivity()).get(HostGameViewModel::class.java)
+            hostViewModel = ViewModelProvider(main_activity).get(HostGameViewModel::class.java)
             viewModel = hostViewModel
         }
         else
         {
-            clientViewModel = ViewModelProvider(requireActivity()).get(ClientGameViewModel::class.java)
+            clientViewModel = ViewModelProvider(main_activity).get(ClientGameViewModel::class.java)
             viewModel = clientViewModel
         }
         if(viewModel.yourField == null)
             viewModel.yourField = Field()
         val view = inflater.inflate(R.layout.fragment_game, container, false)
         findViews(view)
-        val manager = GridLayoutManager(requireContext(), 10)
+        val manager = GridLayoutManager(main_activity, 10)
         yourRecycler.layoutManager = manager
         yourAdapter = GameAdapter(viewModel.yourField!!, false)
         yourRecycler.adapter = yourAdapter
-        val manager2 = GridLayoutManager(requireContext(), 10)
+        val manager2 = GridLayoutManager(main_activity, 10)
         enemyRecycler.layoutManager = manager2
         view.setOnDragListener(this::layoutDragListener)
         for(livedata in viewModel.placedShips)
-            livedata.observe(requireActivity()) {
+            livedata.observe(main_activity) {
                 readyButton.isEnabled = viewModel.isAllPlaced()
             }
         yourRecycler.setOnDragListener(this::recyclerDragListener)
         setUpShipPalette(view)
         viewModel.setUpGame(args.id)
-        viewModel.enemyImage.observe(requireActivity()) {
+        viewModel.enemyImage.observe(main_activity) {
             opponentImageButton.isEnabled = true
             opponentImageButton.setOnClickListener {
                 ProfileDialogFragment(
                     viewModel.enemyImage.value!!,
                     viewModel.enemyName.value!!
-                ).show(requireActivity().supportFragmentManager, "opponentFragment")
+                ).show(main_activity.supportFragmentManager, "opponentFragment")
             }
         }
-        viewModel.enemyName.observe(requireActivity()) {
+        viewModel.enemyName.observe(main_activity) {
             opponentNameTextView.text = it
+        }
+        viewModel.onError.observe(main_activity) {
+            showInfo(R.string.error)
+            fireButton.isEnabled = false
         }
         if(args.isHost)
             setUpHostListeners()
         else
             setUpClientListeners()
-        viewModel.winner.observe(requireActivity()) {
+        viewModel.winner.observe(main_activity) {
             if(it != "")
             {
+                val tmp = it == "host"
+                showInfo(if(!(tmp xor args.isHost)) R.string.you_won else R.string.you_lost)
                 title.text = "End"
+                fireButton.isEnabled = false
             }
-                //requireActivity().supportFragmentManager.popBackStack()
         }
         return view
     }
@@ -193,17 +230,22 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
             }
         }
     }
+    private fun showInfo(string_id: Int)
+    {
+        InfoDialogFragment(string_id)
+            .show(main_activity.supportFragmentManager, "infoFragment")
+    }
     private fun setUpHostListeners()
     {
         title.text = "ID: ${args.id}"
         readyButton.setOnClickListener {
             viewModel.hostReady.value = true
         }
-        hostViewModel.clientConnected.observe(requireActivity()) {
+        hostViewModel.clientConnected.observe(main_activity) {
             if(it)
                 title.text = "Player connected"
         }
-        hostViewModel.hostReady.observe(requireActivity()) {
+        hostViewModel.hostReady.observe(main_activity) {
             if(it)
             {
                 viewModel.setReady()
@@ -212,16 +254,16 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
                     hostViewModel.started.value = true
             }
         }
-        hostViewModel.clientReady.observe(requireActivity()) {
+        hostViewModel.clientReady.observe(main_activity) {
             if(it && hostViewModel.hostReady.value!!)
                 hostViewModel.started.value = true
         }
-        hostViewModel.started.observe(requireActivity()) {
+        hostViewModel.started.observe(main_activity) {
             if(it) {
                 hostViewModel.onGameStarted()
                 onGameStarted()
                 viewModel.shotListener = this
-                viewModel.isHostTurn.observe(requireActivity()){
+                viewModel.isHostTurn.observe(main_activity){
                     title.text = if(it) "Your turn" else "Enemy's turn"
                     fireButton.isEnabled = it
                 }
@@ -240,7 +282,7 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
         readyButton.setOnClickListener {
             viewModel.clientReady.value = true
         }
-        clientViewModel.clientReady.observe(requireActivity()) {
+        clientViewModel.clientReady.observe(main_activity) {
             if(it)
             {
                 viewModel.setReady()
@@ -250,12 +292,12 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
                     title.text = "Wait for host"
             }
         }
-        clientViewModel.started.observe(requireActivity()) {
+        clientViewModel.started.observe(main_activity) {
             if(it) {
                 clientViewModel.onGameStarted()
                 onGameStarted()
                 viewModel.shotListener = this
-                viewModel.isHostTurn.observe(requireActivity()){
+                viewModel.isHostTurn.observe(main_activity){
                     title.text = if(!it) "Your turn" else "Enemy's turn"
                     fireButton.isEnabled = !it
                 }
@@ -381,6 +423,13 @@ class GameFragment : Fragment(), BaseGameViewModel.onShotListener {
             hostViewModel.clear()
         else
             clientViewModel.clear()
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        findNavController().navigateUp()
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
     }
 }
 

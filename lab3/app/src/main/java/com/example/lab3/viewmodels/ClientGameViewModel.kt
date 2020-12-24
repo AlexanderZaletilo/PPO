@@ -1,5 +1,6 @@
 package com.example.lab3.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import com.example.lab3.data.ClientGameFireRepository
 import com.example.lab3.game.ShotsType
 import com.example.lab3.game.Field
@@ -13,6 +14,7 @@ class ClientGameViewModel: BaseGameViewModel() {
     private var clientRepos =  ClientGameFireRepository.getInstance()
     init {
         repos = clientRepos
+        onError = repos.onError
     }
     override fun setUpGame(id: String){
         super.setUpGame(id)

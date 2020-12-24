@@ -1,21 +1,13 @@
 package com.example.lab3.data
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.lifecycle.MutableLiveData
-import com.example.lab3.game.Field
 import com.example.lab3.game.Point
-import com.example.lab3.game.Ship
 import com.example.lab3.game.ShotsType
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+
 
 class HostGameFireRepository: BaseGameFireRepository() {
 
@@ -37,6 +29,9 @@ class HostGameFireRepository: BaseGameFireRepository() {
             override fun onCancelled(databaseError: DatabaseError) {}
         }
         lobbyRef.child("client").addValueEventListener(clientConnectionListener)
+        listenPairs.add(
+            Pair(lobbyRef.child("client"), clientConnectionListener)
+        )
         val shipsListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists()) {
@@ -46,6 +41,9 @@ class HostGameFireRepository: BaseGameFireRepository() {
             override fun onCancelled(databaseError: DatabaseError) {}
         }
         matrixRef.child("clientShips").addValueEventListener(shipsListener)
+        listenPairs.add(
+            Pair(matrixRef.child("clientShips"), shipsListener)
+        )
     }
 
     private fun setUpShotMatrices()
@@ -68,10 +66,15 @@ class HostGameFireRepository: BaseGameFireRepository() {
     fun setWinner(value: String){
         lobbyRef.child("winner").setValue(value)
         GlobalScope.launch(Dispatchers.IO) {
-            Thread.sleep(10000)
-            matrixRef.removeValue()
-            lobbyRef.removeValue()
+            clear()
         }
+    }
+    override fun clear()
+    {
+        super.clear()
+        Thread.sleep(10000)
+        matrixRef.removeValue()
+        lobbyRef.removeValue()
     }
     fun onGameStarted(clientShotCallback: ((String) -> Unit))
     {
@@ -88,6 +91,9 @@ class HostGameFireRepository: BaseGameFireRepository() {
         }
         matrixRef.child("clientShot")
             .addValueEventListener(clientShotListener)
+        listenPairs.add(
+            Pair(matrixRef.child("clientShot"), clientShotListener)
+        )
     }
     companion object {
         private var instance: HostGameFireRepository? = null

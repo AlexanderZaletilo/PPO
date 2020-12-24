@@ -26,6 +26,7 @@ class HostGameViewModel: BaseGameViewModel() {
     var clientConnected =  MutableLiveData<Boolean>().apply{ value = false}
     init {
         repos = hostRepos
+        onError = repos.onError
     }
 
     override fun setUpGame(id: String){
