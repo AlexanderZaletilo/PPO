@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/game_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/game_title_id"
+            style="@style/game_lobby_textview"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/your_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.448"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/game_against_label" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/enemy_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/game_button_fire" />
+
+        <Button
+            android:id="@+id/game_ready"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/ready"
+            app:layout_constraintStart_toStartOf="@+id/your_recycler"
+            app:layout_constraintTop_toBottomOf="@+id/your_recycler" />
+
+        <CheckBox
+            android:id="@+id/game_rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rotate"
+            app:layout_constraintBottom_toBottomOf="@+id/game_button_fire"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/game_button_fire" />
+
+        <Button
+            android:id="@+id/game_button_fire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:enabled="false"
+            android:text="@string/fire"
+            app:layout_constraintEnd_toEndOf="@+id/your_recycler"
+            app:layout_constraintStart_toStartOf="@+id/your_recycler"
+            app:layout_constraintTop_toBottomOf="@+id/your_recycler" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_4_1"
+            style="@style/game_ship_palette_item"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toStartOf="@+id/ship_1_1"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/game_ready" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_1_1"
+            style="@style/game_ship_palette_item"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toStartOf="@+id/ship_1_2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ship_4_1"
+            app:layout_constraintTop_toTopOf="@+id/ship_4_1" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_1_2"
+            style="@style/game_ship_palette_item"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toStartOf="@+id/ship_1_3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ship_1_1"
+            app:layout_constraintTop_toTopOf="@+id/ship_1_1" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_1_3"
+            style="@style/game_ship_palette_item"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toStartOf="@+id/ship_1_4"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ship_1_2"
+            app:layout_constraintTop_toTopOf="@+id/ship_1_2" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_1_4"
+            style="@style/game_ship_palette_item"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ship_1_3"
+            app:layout_constraintTop_toTopOf="@+id/ship_1_3" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_2_1"
+            style="@style/game_ship_palette_item"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toStartOf="@+id/ship_2_2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ship_4_1" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_2_2"
+            style="@style/game_ship_palette_item"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toStartOf="@+id/ship_2_3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ship_2_1"
+            app:layout_constraintTop_toTopOf="@+id/ship_2_1" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_2_3"
+            style="@style/game_ship_palette_item"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ship_2_2"
+            app:layout_constraintTop_toTopOf="@+id/ship_2_2" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_3_1"
+            style="@style/game_ship_palette_item"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ship_3_2"
+            app:layout_constraintTop_toTopOf="@+id/ship_3_2" />
+
+        <com.example.lab3.ui.ShipView
+            android:id="@+id/ship_3_2"
+            style="@style/game_ship_palette_item"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/ic_ship"
+            app:layout_constraintEnd_toStartOf="@+id/ship_3_1"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ship_2_1" />
+
+        <TextView
+            android:id="@+id/game_opponent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            app:layout_constraintStart_toEndOf="@+id/game_against_label"
+            app:layout_constraintTop_toTopOf="@+id/game_against_label" />
+
+        <TextView
+            android:id="@+id/game_against_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/opponent"
+            app:layout_constraintStart_toEndOf="@+id/game_opponent_imagebutton"
+            app:layout_constraintTop_toBottomOf="@+id/game_title_id" />
+
+        <ImageButton
+            android:id="@+id/game_opponent_imagebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/game_against_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/game_against_label"
+            app:srcCompat="@drawable/ic_baseline_image_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
